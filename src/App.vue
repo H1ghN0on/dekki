@@ -1,17 +1,6 @@
 <template>
-  <HelloWorld />
+  <router-view></router-view>
 </template>
-
-<script>
-import HelloWorld from "@/components/HighNoon.vue";
-
-export default {
-  name: "App",
-  components: {
-    HelloWorld,
-  },
-};
-</script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap");
@@ -22,6 +11,7 @@ export default {
 }
 body {
   background: #f5f5f5;
+  font-size: 16px;
 }
 #app {
   font-family: "Raleway";
