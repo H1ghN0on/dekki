@@ -1,12 +1,8 @@
 <template>
   <the-header />
   <div class="container">
-    <DeckUpdateForm class="part form" />
-    <DeckUpdatePreview
-      class="part preview"
-      :main="'作る'"
-      :secondary="'つくる'"
-    />
+    <DeckUpdateForm :front="front" :back="back" class="part form" />
+    <DeckUpdatePreview :front="front" :back="back" class="part preview" />
   </div>
 </template>
 
@@ -22,6 +18,34 @@ export default {
     DeckUpdateForm,
     DeckUpdatePreview,
   },
+  data() {
+    return {
+      front: [
+        {
+          name: "Название",
+          value: "",
+          type: "name",
+        },
+        {
+          name: "Кана",
+          value: "",
+          type: "description",
+        },
+      ],
+      back: [
+        {
+          name: "Перевод",
+          value: "",
+          type: "name",
+        },
+        {
+          name: "Значение кандзи",
+          value: "",
+          type: "description",
+        },
+      ],
+    };
+  },
 };
 </script>
 
@@ -32,10 +56,6 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 60px 0;
-  .part {
-    background: white;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  }
   .form {
     width: 35vw;
   }

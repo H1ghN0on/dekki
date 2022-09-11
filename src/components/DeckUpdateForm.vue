@@ -3,15 +3,23 @@
     <div class="form-part front">
       <div class="title">Лицевая сторона</div>
       <div class="main">
-        <base-input v-model="data.attr1" :label="'Название'" />
-        <base-input v-model="data.attr2" :label="'Кана'" />
+        <base-input
+          v-for="item in front"
+          :key="item.id"
+          v-model="item.value"
+          :label="item.name"
+        />
       </div>
     </div>
     <div class="form-part back">
       <div class="title">Тыльная сторона</div>
       <div class="main">
-        <base-input v-model="data.attr3" :label="'Перевод'" />
-        <base-input v-model="data.attr4" :label="'Значение кандзи'" />
+        <base-input
+          v-for="item in back"
+          :key="item.id"
+          v-model="item.value"
+          :label="item.name"
+        />
       </div>
     </div>
   </form>
@@ -22,15 +30,15 @@ import BaseInput from "@/components/BaseInput";
 export default {
   name: "DeckUpdateForm",
   components: { BaseInput },
-  data() {
-    return {
-      data: {
-        attr1: "",
-        attr2: "",
-        attr3: "",
-        attr4: "",
-      },
-    };
+  props: {
+    front: {
+      type: Array,
+      required: true,
+    },
+    back: {
+      type: Array,
+      required: true,
+    },
   },
 };
 </script>
@@ -39,12 +47,13 @@ export default {
 form {
   display: flex;
   flex-direction: column;
-
   padding: 50px;
   height: 100%;
   width: 100%;
   overflow-y: auto;
   scrollbar-width: thin;
+  background: white;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
   .form-part {
     .title {
       font-size: 1.4em;
