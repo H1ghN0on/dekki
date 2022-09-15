@@ -1,4 +1,4 @@
-import { DecksPage, DeckUpdatePage } from "@/pages";
+import { DeckSettingsPage, DecksPage, DeckUpdatePage } from "@/pages";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
@@ -7,8 +7,12 @@ const routes = [
     component: DecksPage,
   },
   {
-    path: "/deck-update",
+    path: "/update",
     component: DeckUpdatePage,
+  },
+  {
+    path: "/settings",
+    component: DeckSettingsPage,
   },
 ];
 

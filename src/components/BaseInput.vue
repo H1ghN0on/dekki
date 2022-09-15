@@ -4,8 +4,11 @@
     <input
       :value="modelValue"
       @input="updateValue"
-      type="text"
-      :placeholder="label + '...'"
+      :type="type"
+      :placeholder="label ? label + '...' : ''"
+      :step="stepChange"
+      :min="min"
+      :max="max"
     />
   </div>
 </template>
@@ -15,11 +18,29 @@ export default {
   name: "base-input",
   props: {
     label: String,
-    modelValue: [String, Number],
+    modelValue: {
+      type: [String, Number],
+      required: true,
+    },
+    type: {
+      type: String,
+      validator(value) {
+        return ["text", "number"].includes(value);
+      },
+    },
+    step: Function,
+    min: Number,
+    max: Number,
   },
   methods: {
     updateValue(e) {
       this.$emit("update:modelValue", e.target.value);
+    },
+  },
+  computed: {
+    stepChange() {
+      if (!this.step) return 0;
+      return this.step(this.modelValue);
     },
   },
 };
