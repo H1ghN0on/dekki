@@ -17,4 +17,8 @@ body {
   font-family: "Raleway";
   color: $primary-text;
 }
+
+.pointer {
+  cursor: pointer;
+}
 </style>
