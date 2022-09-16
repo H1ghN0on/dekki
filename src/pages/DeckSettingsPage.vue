@@ -1,7 +1,14 @@
 <template>
   <the-header />
   <div class="container">
-    <DeckSettingsForm v-model="structure" class="form" />
+    <DeckSettingsForm
+      :handleAddToFront="handleAddToFront"
+      :handleAddToBack="handleAddToBack"
+      :handleDeleteFromFront="handleDeleteFromFront"
+      :handleDeleteFromBack="handleDeleteFromBack"
+      v-model="structure"
+      class="form"
+    />
     <DeckUpdatePreview class="preview" />
   </div>
 </template>
@@ -10,6 +17,8 @@
 import TheHeader from "@/components/TheHeader";
 import DeckSettingsForm from "@/components/DeckSettingsForm";
 import DeckUpdatePreview from "@/components/DeckUpdatePreview";
+import { useDeckSettingsForm } from "@/hooks";
+
 export default {
   name: "DeckSettingsPage",
   components: {
@@ -17,47 +26,22 @@ export default {
     DeckSettingsForm,
     DeckUpdatePreview,
   },
-  data() {
-    const defaultFields = {
-      name: "",
-      type: {
-        name: "Больше",
-        accessor: "main",
-      },
-      fontSize: 8,
-    };
+
+  setup() {
+    const {
+      structure,
+      handleAddToFront,
+      handleAddToBack,
+      handleDeleteFromFront,
+      handleDeleteFromBack,
+    } = useDeckSettingsForm();
 
     return {
-      structure: {
-        front: [
-          {
-            id: 0,
-            name: defaultFields.name,
-            type: defaultFields.type,
-            fontSize: defaultFields.fontSize,
-          },
-          {
-            id: 1,
-            name: defaultFields.name,
-            type: defaultFields.type,
-            fontSize: defaultFields.fontSize,
-          },
-        ],
-        back: [
-          {
-            id: 0,
-            name: defaultFields.name,
-            type: defaultFields.type,
-            fontSize: defaultFields.fontSize,
-          },
-          {
-            id: 1,
-            name: defaultFields.name,
-            type: defaultFields.type,
-            fontSize: defaultFields.fontSize,
-          },
-        ],
-      },
+      handleAddToFront,
+      handleAddToBack,
+      handleDeleteFromFront,
+      handleDeleteFromBack,
+      structure,
     };
   },
 };

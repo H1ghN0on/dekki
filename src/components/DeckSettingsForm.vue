@@ -1,38 +1,41 @@
 <template>
   <BaseDeckForm>
     <template v-slot:front>
-      <DeckSettingsFormSide :name="'front'" v-model="localeStructure.front" />
+      <DeckSettingsFormSide
+        :addField="handleAddToFront"
+        :deleteField="handleDeleteFromFront"
+        :name="'front'"
+        v-model="localModelValue.front"
+      />
     </template>
     <template v-slot:back>
-      <DeckSettingsFormSide :name="'back'" v-model="localeStructure.back" />
+      <DeckSettingsFormSide
+        :addField="handleAddToBack"
+        :deleteField="handleDeleteFromBack"
+        :name="'back'"
+        v-model="localModelValue.back"
+      />
     </template>
   </BaseDeckForm>
 </template>
 
 <script>
+import { localModelValueMixin } from "@/mixins";
 import BaseDeckForm from "@/components/BaseDeckForm";
 import DeckSettingsFormSide from "@/components/DeckSettingsFormSide";
 
 export default {
   name: "DeckSettingsForm",
+  mixins: [localModelValueMixin],
   components: {
     BaseDeckForm,
     DeckSettingsFormSide,
   },
-
   props: {
-    modelValue: [Object, Number],
-  },
-
-  computed: {
-    localeStructure: {
-      get() {
-        return this.modelValue;
-      },
-      set(newValue) {
-        this.$emit("update:modelValue", newValue);
-      },
-    },
+    handleAddToFront: Function,
+    handleAddToBack: Function,
+    handleDeleteFromFront: Function,
+    handleDeleteFromBack: Function,
   },
 };
 </script>

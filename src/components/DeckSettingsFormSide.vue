@@ -7,71 +7,33 @@
   <div class="input-container">
     <deck-settings-form-field
       class="input-box"
-      v-for="(item, index) in sideData"
+      v-for="(item, index) in localModelValue"
       :key="item.id"
-      v-model="sideData[index]"
-      :onDelete="handleDeleteFieldClick"
+      v-model="localModelValue[index]"
+      :onDelete="deleteField.bind(index)"
     />
   </div>
 
-  <div @click="handleAddFieldClick" class="add-btn pointer">Добавить</div>
+  <div @click="addField" class="add-btn pointer">Добавить</div>
 </template>
 
 <script>
 import DeckSettingsFormField from "@/components/DeckSettingsFormField";
+import { localModelValueMixin } from "@/mixins";
 
 export default {
   name: "DeckSettingsFormSide",
+  mixins: [localModelValueMixin],
   components: {
     DeckSettingsFormField,
   },
   props: {
-    modelValue: { type: [Object, Number], required: true },
     name: {
       type: String,
       required: true,
     },
-  },
-
-  computed: {
-    sideData: {
-      get() {
-        return this.modelValue;
-      },
-
-      set(newValue) {
-        this.$emit("update:modelValue", newValue);
-      },
-    },
-  },
-  methods: {
-    handleAddFieldClick() {
-      const defaultFields = {
-        id: this.sideData.length,
-        name: "",
-        type: {
-          name: "Больше",
-          accessor: "main",
-        },
-        fontSize: 8,
-      };
-      if (this.sideData.length < 4) {
-        this.sideData.push({
-          id: defaultFields.id,
-          name: defaultFields.name,
-          type: defaultFields.type,
-          fontSize: defaultFields.fontSize,
-        });
-      }
-    },
-    handleDeleteFieldClick(id) {
-      if (this.sideData.length > 1) {
-        this.sideData = this.sideData.filter((field, index) => index !== id);
-      }
-      for (let i = id; i < this.sideData.length; i++) {
-        this.sideData[i].id--;
-      }
-    },
+    addField: { type: Function, required: true },
+    deleteField: { type: Function, required: true },
   },
 };
 </script>

@@ -1,14 +1,17 @@
 <template>
   <div>
-    <base-input v-model="data.name" />
-    <base-select v-model="data.type" :items="fieldTypes" />
+    <base-input v-model="localModelValue.name" />
+    <base-select v-model="localModelValue.type" :items="fieldTypes" />
     <base-input
-      v-model="data.fontSize"
+      v-model="localModelValue.fontSize"
       :type="'number'"
       :step="step"
       :min="0"
     />
-    <b-icon-trash-fill class="icon pointer" @click="onDelete(data.id)" />
+    <b-icon-trash-fill
+      class="icon pointer"
+      @click="onDelete(localModelValue.id)"
+    />
   </div>
 </template>
 
@@ -16,9 +19,12 @@
 import { BIconTrashFill } from "bootstrap-icons-vue";
 import BaseInput from "@/components/BaseInput";
 import BaseSelect from "@/components/BaseSelect";
+import { useDeckSettingsForm } from "@/hooks";
+import { localModelValueMixin } from "@/mixins";
 
 export default {
   name: "DeckSettingsFormField",
+  mixins: [localModelValueMixin],
   components: {
     BIconTrashFill,
     BaseInput,
@@ -34,6 +40,12 @@ export default {
       required: true,
     },
   },
+  setup() {
+    const { step } = useDeckSettingsForm();
+    return {
+      step,
+    };
+  },
 
   data() {
     return {
@@ -42,22 +54,6 @@ export default {
         { name: "Меньше", accessor: "secondary" },
       ],
     };
-  },
-
-  methods: {
-    step(value) {
-      return value < 28 ? 4 : value < 48 ? 8 : 16;
-    },
-  },
-  computed: {
-    data: {
-      get() {
-        return this.modelValue;
-      },
-      set(newValue) {
-        this.$emit("update:modelValue", newValue);
-      },
-    },
   },
 };
 </script>
