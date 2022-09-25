@@ -1,20 +1,12 @@
 <template>
   <BaseDeckForm>
     <template v-slot:front>
-      <DeckSettingsFormSide
-        :addField="handleAddToFront"
-        :deleteField="handleDeleteFromFront"
-        :name="'front'"
-        v-model="localModelValue.front"
-      />
+      <DeckSettingsFormSide :addField="handleAddToFront" :deleteField="handleDeleteFromFront" :name="'front'"
+        v-model="localModelValue.front" />
     </template>
     <template v-slot:back>
-      <DeckSettingsFormSide
-        :addField="handleAddToBack"
-        :deleteField="handleDeleteFromBack"
-        :name="'back'"
-        v-model="localModelValue.back"
-      />
+      <DeckSettingsFormSide :addField="handleAddToBack" :deleteField="handleDeleteFromBack" :name="'back'"
+        v-model="localModelValue.back" />
     </template>
   </BaseDeckForm>
 </template>
@@ -41,4 +33,5 @@ export default {
 </script>
 
 <style >
+
 </style>

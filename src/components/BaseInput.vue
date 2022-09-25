@@ -1,15 +1,8 @@
 <template>
   <div class="input">
     <label v-if="label" class="input-name">{{ label }}</label>
-    <input
-      :value="modelValue"
-      @input="updateValue"
-      :type="type"
-      :placeholder="label ? label + '...' : ''"
-      :step="stepChange"
-      :min="min"
-      :max="max"
-    />
+    <input :value="modelValue" @input="updateValue" :type="type" :placeholder="label ? label + '...' : ''"
+      :step="stepChange" :min="min" :max="max" />
   </div>
 </template>
 
@@ -50,6 +43,7 @@ export default {
 .input {
   display: flex;
   flex-direction: column;
+
   .input-name {
     margin-bottom: 5px;
   }
