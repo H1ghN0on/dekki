@@ -24,10 +24,22 @@ export default {
     DeckSettingsFormSide,
   },
   props: {
-    handleAddToFront: Function,
-    handleAddToBack: Function,
-    handleDeleteFromFront: Function,
-    handleDeleteFromBack: Function,
+    handleAddToFront: {
+      type: Function,
+      required: true,
+    },
+    handleAddToBack: {
+      type: Function,
+      required: true,
+    },
+    handleDeleteFromFront: {
+      type: Function,
+      required: true,
+    },
+    handleDeleteFromBack: {
+      type: Function,
+      required: true,
+    },
   },
 };
 </script>

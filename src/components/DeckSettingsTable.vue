@@ -2,7 +2,7 @@
   <table ref="tableRef" :style="{ cursor: selectedCursor }" class="table">
     <tr class="table-header">
       <th :style="{ width: item.width + '%' }" v-for="item in computedHeaders" :key="item.id">
-        {{ item.name }}
+        {{ item.name ? item.name : "Пусто" }}
       </th>
       <th class="settings"></th>
     </tr>
@@ -11,7 +11,7 @@
         width: header.width + '%',
         whiteSpace: header.width > 20 ? 'normal' : 'nowrap',
       }" v-for="header in computedHeaders" :key="header.id">
-        <base-switchable-input v-model="item[header.accessor]" />
+        <base-switchable-input v-model="item[header.accessor]" :placeholder="'Пусто'" />
       </td>
       <td class="settings">
         <b-icon-x />
@@ -40,14 +40,22 @@ export default {
   },
   setup(props) {
     const tableRef = ref(null);
-    const { handleClick, computedHeaders, selectedCursor, setTableForResize } = useDeckTableResize(props.headers);
+    const { handleClick, computedHeaders, selectedCursor, setTableForResize, updateHeaders } = useDeckTableResize(props.headers);
 
     onMounted(() => {
-      setTableForResize(tableRef.value);
+      setTableForResize(tableRef.value)
     })
-    return { handleClick, computedHeaders, selectedCursor, tableRef, setTableForResize }
+
+    return { handleClick, computedHeaders, selectedCursor, tableRef, setTableForResize, updateHeaders }
 
   },
+
+  watch: {
+    headers(newValue) {
+
+      this.updateHeaders(newValue);
+    }
+  }
 
 };
 </script>

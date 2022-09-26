@@ -19,6 +19,8 @@ import DeckSettingsForm from "@/components/DeckSettingsForm";
 import DeckUpdatePreview from "@/components/DeckUpdatePreview";
 import DeckSettingsTable from "@/components/DeckSettingsTable";
 import { useDeckSettingsForm } from "@/hooks";
+import { renameKeys, findDifferentObjectsIndicesInArrays } from "@/utils/ObjectUtils";
+
 
 export default {
   name: "DeckSettingsPage",
@@ -36,6 +38,7 @@ export default {
       handleAddToBack,
       handleDeleteFromFront,
       handleDeleteFromBack,
+      rawStructure,
     } = useDeckSettingsForm();
 
     return {
@@ -44,94 +47,64 @@ export default {
       handleDeleteFromFront,
       handleDeleteFromBack,
       structure,
+      rawStructure,
     };
   },
   data() {
     return {
-      headers: [
-        {
-          name: "Attr1",
-          accessor: "attr1",
-          width: 8,
-          initWidth: 8,
-        },
-        {
-          name: "Attr2",
-          accessor: "attr2",
-          width: 8,
-          initWidth: 8,
-        },
-        {
-          name: "Attr3",
-          accessor: "attr3",
-          width: 8,
-          initWidth: 8,
-        },
-        {
-          name: "Attr4",
-          accessor: "attr4",
-          width: 8,
-          initWidth: 8,
-        },
-        {
-          name: "Attr5",
-          accessor: "attr5",
-          width: 12,
-          initWidth: 12,
-        },
-        {
-          name: "Attr6",
-          accessor: "attr6",
-          width: 12,
-          initWidth: 12,
-        },
-        {
-          name: "Attr7",
-          accessor: "attr7",
-          width: 12,
-          initWidth: 12,
-        },
-
-        {
-          name: "Attr8",
-          accessor: "attr8",
-          width: 22,
-          initWidth: 22,
-        },
-      ],
       data: [
         {
           attr1: "Кто",
           attr2: "Куда",
           attr3: "А я по",
           attr4: "Тапочкам",
-          attr5: "Тапочкам",
-          attr6: "ТапочкаТапочкамТапочкамТапочкамТапочкамТапочкамм",
-          attr7: "Тапочкам",
-          attr8: "ТапочкаТапочкамТапочкамТапочкамТапочкамТапочкамм",
+
         },
         {
           attr1: "Кто",
           attr2: "Куда",
           attr3: "А я по",
           attr4: "Тапочкам",
-          attr5: "Тапочкам",
-          attr6: "Тапочкам",
-          attr7: "Тапочкам",
-          attr8:
-            "ТапочкТапочкакамамаа мТапочкамам ТапочкТапочкамочкамТапочкамТапоч камТапочкамТапочкамТапочкамам",
         },
         {
           attr1: "Кто",
           attr2: "Куда",
           attr3: "А я по",
           attr4: "Тапочкам",
-          attr5: "Тапочкам",
-          attr6: "Тапочкам",
-          attr7: "Тапочкам",
-          attr8: "ТапочТапочкамТапочкамкам",
         },
       ],
+    }
+  },
+
+  computed: {
+    headers() {
+
+      return this.rawStructure.map((item, index) => ({
+        ...item,
+        width: 12,
+        initWidth: 12,
+        accessor: item.name ? item.name.toLowerCase() : "empty_" + index,
+      }));
+    },
+  },
+
+
+
+  watch: {
+    headers(newValue, oldValue) {
+
+      if (newValue.length === oldValue.length) {
+        const indices = findDifferentObjectsIndicesInArrays(oldValue, newValue, "accessor");
+        for (let index of indices) {
+          this.data = this.data.map((item) => {
+            if (newValue[index].accessor === "") {
+              return renameKeys(item, { [oldValue[index].accessor]: "empty_" + index });
+            }
+            return renameKeys(item, { [oldValue[index].accessor]: newValue[index].accessor });
+          })
+        }
+
+      }
     }
   }
 };

@@ -71,13 +71,19 @@ export default function useDeckTableResize(headers) {
     }
   };
 
+  const updateHeaders = (value) => {
+    state.headers = value;
+  };
+
   const computedHeaders = computed(() => state.headers);
   const selectedCursor = computed(() => state.selectedCursor);
 
   return {
     computedHeaders,
     handleClick,
+    headers: state.headers,
     selectedCursor,
     setTableForResize,
+    updateHeaders,
   };
 }

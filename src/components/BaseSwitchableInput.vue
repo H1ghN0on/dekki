@@ -1,17 +1,15 @@
 <template>
   <input ref="inputRef" v-if="isInput" class="input switchable" type="text" @blur="isInput = false" :value="modelValue"
     @input="updateValue" />
-  <span :style="{cursor: 'text'}" v-else @click="isInput = true">{{modelValue}}</span>
+  <span :style="{cursor: 'text'}" v-else @click="isInput = true" v-html="modelValue ?? `<i>${placeholder}</i>`" />
 </template>
 
 <script>
 export default {
   name: "base-switchable-input",
   props: {
-    modelValue: {
-      required: true,
-      type: [String, Number],
-    },
+    modelValue: [String, Number],
+    placeholder: String,
   },
   methods: {
     updateValue(e) {

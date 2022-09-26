@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 
 export default function useDeckSettingsForm() {
   const defaultFields = {
@@ -13,13 +13,13 @@ export default function useDeckSettingsForm() {
     front: [
       {
         id: 0,
-        name: defaultFields.name,
+        name: "attr1",
         type: defaultFields.type,
         fontSize: defaultFields.fontSize,
       },
       {
         id: 1,
-        name: defaultFields.name,
+        name: "attr2",
         type: defaultFields.type,
         fontSize: defaultFields.fontSize,
       },
@@ -27,13 +27,13 @@ export default function useDeckSettingsForm() {
     back: [
       {
         id: 0,
-        name: defaultFields.name,
+        name: "attr3",
         type: defaultFields.type,
         fontSize: defaultFields.fontSize,
       },
       {
         id: 1,
-        name: defaultFields.name,
+        name: "attr4",
         type: defaultFields.type,
         fontSize: defaultFields.fontSize,
       },
@@ -88,7 +88,15 @@ export default function useDeckSettingsForm() {
     handleDeleteFieldClick("back", id);
   };
 
+  const rawStructure = computed(() => {
+    return structure.front.concat(structure.back).map((item, index) => ({
+      ...item,
+      id: index,
+    }));
+  });
+
   return {
+    rawStructure,
     structure,
     step,
     handleAddToFront,
