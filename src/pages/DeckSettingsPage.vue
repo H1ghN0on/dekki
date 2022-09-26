@@ -72,23 +72,30 @@ export default {
           attr3: "А я по",
           attr4: "Тапочкам",
         },
-      ],
+      ].map(row => {
+        const keys = Object.keys(row);
+        const newKeys = keys.map((key, index) => key + "_" + index);
+        let obj = {};
+        keys.forEach((element, index) => {
+          obj[element] = newKeys[index];
+        });
+        row = renameKeys(row, obj);
+        return row;
+      })
     }
   },
 
   computed: {
-    headers() {
 
+    headers() {
       return this.rawStructure.map((item, index) => ({
         ...item,
         width: 12,
         initWidth: 12,
-        accessor: item.name ? item.name.toLowerCase() : "empty_" + index,
+        accessor: item.name ? item.name.toLowerCase() + "_" + index : "empty_" + index,
       }));
     },
   },
-
-
 
   watch: {
     headers(newValue, oldValue) {
