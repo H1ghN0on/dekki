@@ -8,7 +8,7 @@
       <DeckUpdatePreview class="preview" />
     </div>
     <div class="table-container">
-      <DeckSettingsTable :headers="headers" :data="data.data" />
+      <DeckSettingsTable :handleDeleteRow="handleDeleteRow" :headers="headers" :data="data.data" />
     </div>
   </div>
 </template>
@@ -73,23 +73,23 @@ export default {
 
     const rawData = [
       {
-        rofl: "Кто",
-        attr2: "Куда",
-        attr3: "А я по",
-        attr4: "Тапочкам",
+        rofl: "Кто1",
+        attr2: "Куда1",
+        attr3: "А я по1",
+        attr4: "Тапочкам1",
 
       },
       {
-        rofl: "Кто",
-        attr2: "Куда",
-        attr3: "А я по",
-        attr4: "Тапочкам",
+        rofl: "Кто2",
+        attr2: "Куда2",
+        attr3: "А я по2",
+        attr4: "Тапочкам2",
       },
       {
-        rofl: "Кто",
-        attr2: "Куда",
-        attr3: "А я по",
-        attr4: "Тапочкам",
+        rofl: "Кто3",
+        attr2: "Куда3",
+        attr3: "А я по3",
+        attr4: "Тапочкам3",
       },
     ];
 
@@ -110,7 +110,12 @@ export default {
     } = useDeckSettingsForm(dbStructure);
 
 
-    const { updateStructure, data, headers } = useTable(deckStructureToTableStructure(structure), rawData);
+    const {
+      updateStructure,
+      data,
+      headers,
+      handleDeleteRow
+    } = useTable(deckStructureToTableStructure(structure), rawData);
 
 
     watch(structure, (newValue) => {
@@ -126,7 +131,8 @@ export default {
       structure,
       data,
       headers,
-      step
+      step,
+      handleDeleteRow
     };
   },
 };

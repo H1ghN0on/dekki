@@ -48,9 +48,14 @@ export default function useTable(rawStructure, rawData) {
     data.structure = newStructure;
   };
 
+  const handleDeleteRow = (id) => {
+    data.data = data.data.filter((row, index) => index !== id);
+  };
+
   return {
     data,
     headers,
     updateStructure,
+    handleDeleteRow,
   };
 }

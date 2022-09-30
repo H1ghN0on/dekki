@@ -6,7 +6,7 @@
       </th>
       <th class="settings"></th>
     </tr>
-    <tr class="table-row" v-for="item in data" :key="item.id">
+    <tr class="table-row" v-for="(item, index) in data" :key="item.id">
       <td @mousedown="handleClick" :style="{
         width: header.width + '%',
         whiteSpace: header.width > 20 ? 'normal' : 'nowrap',
@@ -14,7 +14,10 @@
         <base-switchable-input v-model="item[header.accessor]" :placeholder="'Пусто'" />
       </td>
       <td class="settings">
-        <b-icon-x />
+        <div class="setting">
+          <b-icon-x class="pointer icon" @click="handleDeleteRow(index)" />
+        </div>
+
       </td>
     </tr>
   </table>
@@ -37,15 +40,17 @@ export default {
       type: Array,
       required: true,
     },
+    handleDeleteRow: {
+      type: Function,
+      required: true,
+    }
   },
   setup(props) {
     const tableRef = ref(null);
     const { handleClick, computedHeaders, selectedCursor, setTableForResize, updateHeaders } = useDeckTableResize(props.headers);
-
     onMounted(() => {
       setTableForResize(tableRef.value)
     })
-
     return { handleClick, computedHeaders, selectedCursor, tableRef, setTableForResize, updateHeaders }
 
   },
@@ -100,10 +105,16 @@ export default {
     }
 
     .settings {
+      .setting {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
       color: red;
-      font-size: 1.5em;
+      font-size: 2em;
       padding: 0;
-      width: 5%;
+      margin: 0;
     }
   }
 }
