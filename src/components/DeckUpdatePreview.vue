@@ -2,12 +2,14 @@
   <div class="preview">
     <div class="card" :class="{ flipped: !isFront }">
       <div class="front">
-        <div v-for="item in front" :key="item.id" :class="'attr ' + item.type">
+        <div v-for="item in front" :key="item.id" :class="'attr ' + item.type"
+          :style="{'font-size': item.fontSize + 'px',}">
           {{ item.value }}
         </div>
       </div>
       <div class="back">
-        <div v-for="item in back" :key="item.id" :class="'attr ' + item.type">
+        <div v-for="item in back" :key="item.id" :class="'attr ' + item.type"
+          :style="{'font-size': item.fontSize + 'px'}">
           {{ item.value }}
         </div>
       </div>
@@ -36,6 +38,7 @@ export default {
     },
   },
 
+
   data() {
     return {
       isFront: true,
@@ -53,6 +56,7 @@ export default {
   width: 100%;
   height: 100%;
   text-align: center;
+
   .card {
     position: relative;
     display: flex;
@@ -65,6 +69,8 @@ export default {
     transition: all 0.5s ease;
     background: white;
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+
+
     &.flipped {
       transform: rotateY(180deg);
     }
@@ -73,25 +79,29 @@ export default {
       position: absolute;
       backface-visibility: hidden;
       transform: rotateY(0deg);
+
     }
 
     .back {
       position: absolute;
       backface-visibility: hidden;
       transform: rotateY(180deg);
+
     }
+
+
+
     .attr {
-      &.name {
+      margin-top: 15px;
+
+      &.main {
         font-weight: bold;
-        font-size: 4em;
+
       }
 
-      &.description {
-        font-size: 1.5em;
-        margin-top: 15px;
-      }
     }
   }
+
   .flip-btn {
     cursor: pointer;
     position: absolute;

@@ -17,7 +17,6 @@
         <div class="setting">
           <b-icon-x class="pointer icon" @click="handleDeleteRow(index)" />
         </div>
-
       </td>
     </tr>
   </table>

@@ -24,24 +24,28 @@ export default {
         {
           name: "Название",
           value: "",
-          type: "name",
+          type: "main",
+          fontSize: 32,
         },
         {
           name: "Кана",
           value: "",
-          type: "description",
-        },
+          type: "secondary",
+          fontSize: 24,
+        }
       ],
       back: [
         {
           name: "Перевод",
           value: "",
-          type: "name",
+          type: "main",
+          fontSize: 24,
         },
         {
           name: "Значение кандзи",
           value: "",
-          type: "description",
+          type: "secondary",
+          fontSize: 24,
         },
       ],
     };
@@ -56,9 +60,11 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 60px 0;
+
   .form {
     width: 35vw;
   }
+
   .preview {
     width: 35vw;
     margin-right: 30px;

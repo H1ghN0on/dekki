@@ -5,7 +5,7 @@
       <DeckSettingsForm :step="step" :handleAddToFront="handleAddToFront" :handleAddToBack="handleAddToBack"
         :handleDeleteFromFront="handleDeleteFromFront" :handleDeleteFromBack="handleDeleteFromBack" v-model="structure"
         class="form" />
-      <DeckUpdatePreview class="preview" />
+      <DeckUpdatePreview :front="preview.front" :back="preview.back" class="preview" />
     </div>
     <div class="table-container">
       <DeckSettingsTable :handleDeleteRow="handleDeleteRow" :headers="headers" :data="data.data" />
@@ -36,9 +36,9 @@ export default {
       name: "",
       type: {
         name: "Больше",
-        accessor: "main",
+        accessor: "secondary",
       },
-      fontSize: 8,
+      fontSize: 24,
     };
     const dbStructure = {
       front: [
@@ -135,6 +135,24 @@ export default {
       handleDeleteRow
     };
   },
+
+  computed: {
+    preview() {
+      return {
+        front: this.structure.front.map((item) => ({
+          ...item,
+          type: item.type.accessor,
+          value: item.name
+        })),
+        back: this.structure.back.map((item) => ({
+          ...item,
+          type: item.type.accessor,
+          value: item.name
+        })),
+      }
+    }
+  }
+
 };
 </script>
 
