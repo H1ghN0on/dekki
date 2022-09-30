@@ -1,6 +1,13 @@
 <template>
   <the-header />
+
   <div class="container">
+    <div class="deck-name-container">
+      <div class="deck-name">
+        <base-switchable-input v-model="deckName" :placeholder="'Пусто'" />
+      </div>
+
+    </div>
     <div class="form-container">
       <DeckSettingsForm :step="step" :handleAddToFront="handleAddToFront" :handleAddToBack="handleAddToBack"
         :handleDeleteFromFront="handleDeleteFromFront" :handleDeleteFromBack="handleDeleteFromBack" v-model="structure"
@@ -18,6 +25,7 @@ import TheHeader from "@/components/TheHeader";
 import DeckSettingsForm from "@/components/DeckSettingsForm";
 import DeckUpdatePreview from "@/components/DeckUpdatePreview";
 import DeckSettingsTable from "@/components/DeckSettingsTable";
+import BaseSwitchableInput from "@/components/BaseSwitchableInput"
 import { useDeckSettingsForm, useTable } from "@/hooks";
 import { watch } from "vue";
 
@@ -29,6 +37,7 @@ export default {
     DeckSettingsForm,
     DeckUpdatePreview,
     DeckSettingsTable,
+    BaseSwitchableInput
   },
 
   setup() {
@@ -40,6 +49,7 @@ export default {
       },
       fontSize: 24,
     };
+    const setupedDeckName = "MyFavDeck";
     const dbStructure = {
       front: [
         {
@@ -132,8 +142,16 @@ export default {
       data,
       headers,
       step,
-      handleDeleteRow
+      handleDeleteRow,
+      setupedDeckName
     };
+  },
+
+
+  data() {
+    return {
+      deckName: this.setupedDeckName,
+    }
   },
 
   computed: {
@@ -158,13 +176,31 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  .deck-name-container {
+    width: 100%;
+    align-self: start;
+    font-size: 3em;
+    font-weight: bold;
+
+    .deck-name {
+      max-width: 100%;
+      padding-left: 30px;
+      padding-right: 30px;
+      word-break: normal;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
   display: flex;
   flex-direction: column;
   align-items: center;
   height: calc(100vh - 80px);
-  padding: 60px 0;
+  padding: 40px 0;
 
   .form-container {
+    margin-top: 30px;
     width: 100%;
     display: flex;
     justify-content: space-between;

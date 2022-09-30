@@ -12,7 +12,6 @@ export default {};
 header {
   display: flex;
   justify-content: center;
-
   background: white;
   height: 80px;
   padding: 10px 0;

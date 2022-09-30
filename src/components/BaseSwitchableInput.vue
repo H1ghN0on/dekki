@@ -1,7 +1,8 @@
 <template>
-  <input ref="inputRef" v-if="isInput" class="input switchable" type="text" @blur="isInput = false" :value="modelValue"
-    @input="updateValue" />
-  <span :style="{cursor: 'text'}" v-else @click="isInput = true" v-html="modelValue ?? `<i>${placeholder}</i>`" />
+  <input @change="onChange" ref="inputRef" v-if="isInput" class="input switchable" type="text" @blur="isInput = false"
+    :value="modelValue" @input="updateValue" />
+  <span :style="{cursor: 'text'}" v-else @click="isInput = true"
+    v-html="modelValue ? modelValue : `<i>${placeholder}</i>`" />
 </template>
 
 <script>
@@ -10,11 +11,11 @@ export default {
   props: {
     modelValue: [String, Number],
     placeholder: String,
+    onChange: Function,
   },
   methods: {
     updateValue(e) {
       this.$emit("update:modelValue", e.target.value);
-
     },
   },
 
@@ -26,6 +27,7 @@ export default {
 
   watch: {
     isInput(wasInput) {
+
       if (wasInput)
         this.$nextTick(() => { this.$refs.inputRef.focus() });
     }
@@ -40,5 +42,6 @@ export default {
   outline: none;
   width: 100%;
   text-align: inherit;
+  background: inherit;
 }
 </style>
