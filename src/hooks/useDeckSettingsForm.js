@@ -1,48 +1,11 @@
-import { reactive, computed } from "vue";
+import { reactive } from "vue";
 
-export default function useDeckSettingsForm() {
-  const defaultFields = {
-    name: "",
-    type: {
-      name: "Больше",
-      accessor: "main",
-    },
-    fontSize: 8,
-  };
-  const structure = reactive({
-    front: [
-      {
-        id: 0,
-        name: "attr1",
-        type: defaultFields.type,
-        fontSize: defaultFields.fontSize,
-      },
-      {
-        id: 1,
-        name: "attr2",
-        type: defaultFields.type,
-        fontSize: defaultFields.fontSize,
-      },
-    ],
-    back: [
-      {
-        id: 0,
-        name: "attr3",
-        type: defaultFields.type,
-        fontSize: defaultFields.fontSize,
-      },
-      {
-        id: 1,
-        name: "attr4",
-        type: defaultFields.type,
-        fontSize: defaultFields.fontSize,
-      },
-    ],
-  });
+export default function useDeckSettingsForm(dbStructure) {
+  const structure = reactive(dbStructure);
 
   const handleAddFieldClick = (name) => {
     const defaultFields = {
-      id: structure[name].length,
+      id: Math.floor(Math.random() * 10000),
       name: "",
       type: {
         name: "Больше",
@@ -61,10 +24,7 @@ export default function useDeckSettingsForm() {
   };
   const handleDeleteFieldClick = (name, id) => {
     if (structure[name].length > 1) {
-      structure[name] = structure[name].filter((field, index) => index !== id);
-    }
-    for (let i = id; i < structure[name].length; i++) {
-      structure[name][i].id--;
+      structure[name] = structure[name].filter((field) => field.id !== id);
     }
   };
 
@@ -88,15 +48,7 @@ export default function useDeckSettingsForm() {
     handleDeleteFieldClick("back", id);
   };
 
-  const rawStructure = computed(() => {
-    return structure.front.concat(structure.back).map((item, index) => ({
-      ...item,
-      id: index,
-    }));
-  });
-
   return {
-    rawStructure,
     structure,
     step,
     handleAddToFront,

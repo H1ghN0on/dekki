@@ -2,10 +2,10 @@
   <BaseDeckForm>
     <template v-slot:front>
       <DeckSettingsFormSide :addField="handleAddToFront" :deleteField="handleDeleteFromFront" :name="'front'"
-        v-model="localModelValue.front" />
+        :step="step" v-model="localModelValue.front" />
     </template>
     <template v-slot:back>
-      <DeckSettingsFormSide :addField="handleAddToBack" :deleteField="handleDeleteFromBack" :name="'back'"
+      <DeckSettingsFormSide :addField="handleAddToBack" :deleteField="handleDeleteFromBack" :name="'back'" :step="step"
         v-model="localModelValue.back" />
     </template>
   </BaseDeckForm>
@@ -40,6 +40,10 @@ export default {
       type: Function,
       required: true,
     },
+    step: {
+      type: Function,
+      required: true,
+    }
   },
 };
 </script>

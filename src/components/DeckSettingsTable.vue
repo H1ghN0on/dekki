@@ -52,7 +52,6 @@ export default {
 
   watch: {
     headers(newValue) {
-
       this.updateHeaders(newValue);
     }
   }

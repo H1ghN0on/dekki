@@ -2,13 +2,13 @@
   <the-header />
   <div class="container">
     <div class="form-container">
-      <DeckSettingsForm :handleAddToFront="handleAddToFront" :handleAddToBack="handleAddToBack"
+      <DeckSettingsForm :step="step" :handleAddToFront="handleAddToFront" :handleAddToBack="handleAddToBack"
         :handleDeleteFromFront="handleDeleteFromFront" :handleDeleteFromBack="handleDeleteFromBack" v-model="structure"
         class="form" />
       <DeckUpdatePreview class="preview" />
     </div>
     <div class="table-container">
-      <DeckSettingsTable :headers="headers" :data="data" />
+      <DeckSettingsTable :headers="headers" :data="data.data" />
     </div>
   </div>
 </template>
@@ -18,8 +18,8 @@ import TheHeader from "@/components/TheHeader";
 import DeckSettingsForm from "@/components/DeckSettingsForm";
 import DeckUpdatePreview from "@/components/DeckUpdatePreview";
 import DeckSettingsTable from "@/components/DeckSettingsTable";
-import { useDeckSettingsForm } from "@/hooks";
-import { renameKeys, findDifferentObjectsIndicesInArrays } from "@/utils/ObjectUtils";
+import { useDeckSettingsForm, useTable } from "@/hooks";
+import { watch } from "vue";
 
 
 export default {
@@ -32,14 +32,91 @@ export default {
   },
 
   setup() {
+    const defaultFields = {
+      name: "",
+      type: {
+        name: "Больше",
+        accessor: "main",
+      },
+      fontSize: 8,
+    };
+    const dbStructure = {
+      front: [
+        {
+          id: 228,
+          name: "rofl",
+          type: defaultFields.type,
+          fontSize: defaultFields.fontSize,
+        },
+        {
+          id: 1488,
+          name: "attr2",
+          type: defaultFields.type,
+          fontSize: defaultFields.fontSize,
+        },
+      ],
+      back: [
+        {
+          id: 367,
+          name: "attr3",
+          type: defaultFields.type,
+          fontSize: defaultFields.fontSize,
+        },
+        {
+          id: 752,
+          name: "attr4",
+          type: defaultFields.type,
+          fontSize: defaultFields.fontSize,
+        },
+      ],
+    }
+
+    const rawData = [
+      {
+        rofl: "Кто",
+        attr2: "Куда",
+        attr3: "А я по",
+        attr4: "Тапочкам",
+
+      },
+      {
+        rofl: "Кто",
+        attr2: "Куда",
+        attr3: "А я по",
+        attr4: "Тапочкам",
+      },
+      {
+        rofl: "Кто",
+        attr2: "Куда",
+        attr3: "А я по",
+        attr4: "Тапочкам",
+      },
+    ];
+
+    const deckStructureToTableStructure = (deckStr) => {
+      return deckStr.front.concat(deckStr.back).map((item) => ({
+        ...item,
+        accessor: item.name + "_" + item.id,
+      }));
+    }
+
     const {
       structure,
       handleAddToFront,
       handleAddToBack,
       handleDeleteFromFront,
       handleDeleteFromBack,
-      rawStructure,
-    } = useDeckSettingsForm();
+      step,
+    } = useDeckSettingsForm(dbStructure);
+
+
+    const { updateStructure, data, headers } = useTable(deckStructureToTableStructure(structure), rawData);
+
+
+    watch(structure, (newValue) => {
+      const newStructure = deckStructureToTableStructure(newValue);
+      updateStructure(newStructure);
+    })
 
     return {
       handleAddToFront,
@@ -47,73 +124,11 @@ export default {
       handleDeleteFromFront,
       handleDeleteFromBack,
       structure,
-      rawStructure,
+      data,
+      headers,
+      step
     };
   },
-  data() {
-    return {
-      data: [
-        {
-          attr1: "Кто",
-          attr2: "Куда",
-          attr3: "А я по",
-          attr4: "Тапочкам",
-
-        },
-        {
-          attr1: "Кто",
-          attr2: "Куда",
-          attr3: "А я по",
-          attr4: "Тапочкам",
-        },
-        {
-          attr1: "Кто",
-          attr2: "Куда",
-          attr3: "А я по",
-          attr4: "Тапочкам",
-        },
-      ].map(row => {
-        const keys = Object.keys(row);
-        const newKeys = keys.map((key, index) => key + "_" + index);
-        let obj = {};
-        keys.forEach((element, index) => {
-          obj[element] = newKeys[index];
-        });
-        row = renameKeys(row, obj);
-        return row;
-      })
-    }
-  },
-
-  computed: {
-
-    headers() {
-      return this.rawStructure.map((item, index) => ({
-        ...item,
-        width: 12,
-        initWidth: 12,
-        accessor: item.name ? item.name.toLowerCase() + "_" + index : "empty_" + index,
-      }));
-    },
-  },
-
-  watch: {
-    headers(newValue, oldValue) {
-
-      if (newValue.length === oldValue.length) {
-        const indices = findDifferentObjectsIndicesInArrays(oldValue, newValue, "accessor");
-        for (let index of indices) {
-          this.data = this.data.map((item) => {
-            if (newValue[index].accessor === "") {
-              return renameKeys(item, { [oldValue[index].accessor]: "empty_" + index });
-            }
-            return renameKeys(item, { [oldValue[index].accessor]: newValue[index].accessor });
-          })
-        }
-
-      }
-    }
-  }
 };
 </script>
 

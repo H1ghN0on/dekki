@@ -5,13 +5,8 @@
     <div class="list__item">Шрифт</div>
   </div>
   <div class="input-container">
-    <deck-settings-form-field
-      class="input-box"
-      v-for="(item, index) in localModelValue"
-      :key="item.id"
-      v-model="localModelValue[index]"
-      :onDelete="deleteField.bind(index)"
-    />
+    <deck-settings-form-field class="input-box" v-for="(item, index) in localModelValue" :key="item.id"
+      v-model="localModelValue[index]" :onDelete="deleteField.bind(index)" :step="step" />
   </div>
 
   <div @click="addField" class="add-btn pointer">Добавить</div>
@@ -32,6 +27,11 @@ export default {
       type: String,
       required: true,
     },
+    step: {
+      type: Function,
+      required: true,
+    },
+
     addField: { type: Function, required: true },
     deleteField: { type: Function, required: true },
   },
@@ -44,15 +44,18 @@ export default {
 
   grid-template-columns: 50% 25% 20%;
   grid-gap: 5px;
+
   .list__item {
     font-weight: bold;
     margin-bottom: 5px;
   }
 }
+
 .input-container {
   width: 100%;
   display: grid;
   grid-gap: 5px;
+
   .input-box {
     display: grid;
     align-items: center;
@@ -60,6 +63,7 @@ export default {
     grid-gap: 5px;
   }
 }
+
 .add-btn {
   display: flex;
   justify-content: center;
