@@ -1,8 +1,8 @@
 <template>
-  <div class="input">
+  <div class="input-box">
     <label v-if="label" class="input-name">{{ label }}</label>
     <input :value="modelValue" @input="updateValue" :type="type" :placeholder="label ? label + '...' : ''"
-      :step="stepChange" :min="min" :max="max" />
+      :step="stepChange" :min="min" :max="max" :class="className" />
   </div>
 </template>
 
@@ -24,6 +24,8 @@ export default {
     step: Function,
     min: Number,
     max: Number,
+    className: String,
+
   },
   methods: {
     updateValue(e) {
@@ -40,7 +42,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.input {
+.input-box {
   display: flex;
   flex-direction: column;
 

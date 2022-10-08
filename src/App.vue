@@ -19,6 +19,11 @@ body {
 #app {
   font-family: "Raleway";
   color: $primary-text;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 input {

@@ -1,6 +1,9 @@
 <template>
-  <the-header />
 
+  <the-header />
+  <div @click="saveDeck" v-if="!isSaved" class="save-btn pointer">
+    <BIconFileEarmarkFill class="save-btn-icon" />
+  </div>
   <div class="container">
     <div class="deck-name-container">
       <div class="deck-name">
@@ -21,6 +24,7 @@
 </template>
 
 <script>
+import { BIconFileEarmarkFill } from "bootstrap-icons-vue";
 import TheHeader from "@/components/TheHeader";
 import DeckSettingsForm from "@/components/DeckSettingsForm";
 import DeckUpdatePreview from "@/components/DeckUpdatePreview";
@@ -37,7 +41,8 @@ export default {
     DeckSettingsForm,
     DeckUpdatePreview,
     DeckSettingsTable,
-    BaseSwitchableInput
+    BaseSwitchableInput,
+    BIconFileEarmarkFill
   },
 
   setup() {
@@ -45,7 +50,7 @@ export default {
       name: "",
       type: {
         name: "Больше",
-        accessor: "secondary",
+        accessor: "main",
       },
       fontSize: 24,
     };
@@ -148,9 +153,11 @@ export default {
   },
 
 
+
   data() {
     return {
       deckName: this.setupedDeckName,
+      isSaved: false,
     }
   },
 
@@ -169,18 +176,45 @@ export default {
         })),
       }
     }
+  },
+
+  methods: {
+    saveDeck() {
+      this.isSaved = true;
+      console.log("saved!");
+    }
   }
 
 };
 </script>
 
 <style lang="scss" scoped>
+.save-btn {
+  position: fixed;
+  font-size: 1.5em;
+  bottom: 50px;
+  right: 50px;
+  z-index: 1000;
+  background: $primary-text;
+  border-radius: 50%;
+  padding: 15px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+
+  .save-btn-icon {
+    fill: white;
+  }
+}
+
 .container {
   .deck-name-container {
     width: 100%;
     align-self: start;
     font-size: 3em;
     font-weight: bold;
+
 
     .deck-name {
       max-width: 100%;

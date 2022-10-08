@@ -1,4 +1,4 @@
-import { DeckSettingsPage, DecksPage, DeckUpdatePage } from "@/pages";
+import { DeckSettingsPage, DecksPage, DeckUpdatePage, AuthPage } from "@/pages";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
@@ -13,6 +13,10 @@ const routes = [
   {
     path: "/settings",
     component: DeckSettingsPage,
+  },
+  {
+    path: "/auth",
+    component: AuthPage,
   },
 ];
 

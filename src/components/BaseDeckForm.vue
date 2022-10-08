@@ -1,12 +1,12 @@
 <template>
-  <form>
-    <div class="form-part front">
+  <form class="base-deck-form">
+    <div class="base-deck-form-part front">
       <div class="title">Лицевая сторона</div>
       <div class="main">
         <slot name="front"></slot>
       </div>
     </div>
-    <div class="form-part back">
+    <div class="base-deck-form-part back">
       <div class="title">Тыльная сторона</div>
       <div class="main">
         <slot name="back"></slot>
@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style lang="scss">
-form {
+.base-deck-form {
   display: flex;
   flex-direction: column;
   padding: 40px;
@@ -32,17 +32,19 @@ form {
   scrollbar-width: thin;
   background: white;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  .form-part {
+
+  .base-deck-form-part {
     .title {
       font-size: 1.4em;
       font-weight: bold;
       padding-bottom: 10px;
       border-bottom: 1px solid silver;
     }
+
     .main {
       padding: 20px 0;
 
-      & > div {
+      &>div {
         margin-bottom: 15px;
       }
 
@@ -50,6 +52,7 @@ form {
         margin-bottom: 0;
       }
     }
+
     &.back {
       .main {
         padding-bottom: 0;

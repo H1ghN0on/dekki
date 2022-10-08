@@ -1,17 +1,31 @@
 <template>
   <header>
-    <div class="logo">正午</div>
+    <div class="logo">
+      <router-link to="/decks">正午</router-link>
+    </div>
+    <nav>
+      <router-link to="auth">
+        <base-button class="sign-in-btn pointer">Вход</base-button>
+      </router-link>
+    </nav>
   </header>
 </template>
 
 <script>
-export default {};
+import BaseButton from "@/components/BaseButton"
+export default {
+  components: {
+    BaseButton,
+  }
+};
 </script>
 
 <style lang="scss" scoped>
 header {
   display: flex;
   justify-content: center;
+  position: relative;
+  align-items: center;
   background: white;
   height: 80px;
   padding: 10px 0;
@@ -21,5 +35,16 @@ header {
     font-size: 3em;
     font-weight: bold;
   }
+
+  nav {
+    position: absolute;
+    right: 5vw;
+  }
+
+  .sign-in-btn {
+    font-size: 1em;
+    padding: 10px 25px;
+  }
+
 }
 </style>
