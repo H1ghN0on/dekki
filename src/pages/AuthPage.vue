@@ -7,6 +7,9 @@
                     Вход
                 </div>
                 <form class="form">
+                    <div class="errors" v-if="loginErrors.length">
+                        <div class="error" v-for="error, index of loginErrors" :key="index">{{error}}</div>
+                    </div>
                     <div class="input-box">
                         <base-input class="input" v-model="login.username" :label="'Имя пользователя'" />
                     </div>
@@ -14,30 +17,34 @@
                         <base-input class="input" v-model="login.password" :label="'Пароль'" :type="'password'" />
                     </div>
                     <div class="submit-btn-box">
-                        <base-button class="submit-btn" type="'submit'">Вперёд</base-button>
+                        <base-button @click="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
                     </div>
                 </form>
             </div>
             <div class="card register">
-                <div @click="isRegister = true" class="login-btn pointer">
+                <div @click="toggleAuth" class="login-btn pointer">
                 </div>
                 <div class="title">
                     <span>Регистрация</span>
-                    <div @click="isRegister = false" class="close pointer"></div>
+                    <div @click="toggleAuth" class="close pointer"></div>
                 </div>
 
                 <form class="form">
+                    <div class="errors" v-if="registrationErrors.length">
+                        <div class="error" v-for="error, index of registrationErrors" :key="index">{{error}}</div>
+                    </div>
+
                     <div class="input-box">
-                        <base-input class="input" v-model="login.username" :label="'Имя пользователя'" />
+                        <base-input class="input" v-model="register.username" :label="'Имя пользователя'" />
                     </div>
                     <div class="input-box">
-                        <base-input class="input" v-model="login.password" :label="'Почта'" :type="'password'" />
+                        <base-input class="input" v-model="register.email" :label="'Почта'" />
                     </div>
                     <div class="input-box">
-                        <base-input class="input" v-model="login.password" :label="'Пароль'" :type="'password'" />
+                        <base-input class="input" v-model="register.password" :label="'Пароль'" :type="'password'" />
                     </div>
                     <div class="submit-btn-box">
-                        <base-button class="submit-btn" type="'submit'">Вперёд</base-button>
+                        <base-button @click="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
                     </div>
                 </form>
             </div>
@@ -46,23 +53,98 @@
 </template>
 
 <script>
-import TheHeader from "@/components/TheHeader"
-import BaseInput from "@/components/BaseInput"
-import BaseButton from "@/components/BaseButton"
 
+import BaseInput from "@/components/BaseInput"
+import TheHeader from "@/components/TheHeader"
+import BaseButton from "@/components/BaseButton"
+import axios from "axios";
+import { useToast } from "vue-toastification";
 
 export default {
 
     name: "AuthPage",
     components: { TheHeader, BaseInput, BaseButton, },
+    setup() {
+        const toast = useToast();
+        return { toast }
+    },
 
     data() {
         return {
+            register: {
+                username: "",
+                email: "",
+                password: "",
+            },
             login: {
                 username: "",
                 password: "",
             },
+            registrationErrors: [],
+            loginErrors: [],
             isRegister: false,
+        }
+    },
+
+
+    methods: {
+
+        toggleAuth() {
+            this.isRegister = !this.isRegister;
+            this.registrationErrors = this.loginErrors = [];
+        },
+
+        async handleAuth(e) {
+            e.preventDefault();
+            this.registrationErrors = this.loginErrors = [];
+            if (this.isRegister) {
+                if (!this.register.username.trim()) {
+                    this.registrationErrors.push("Введите имя пользователя");
+                }
+                if (!this.register.email.trim()) {
+                    this.registrationErrors.push("Введите почту");
+                }
+                if (!this.register.password.trim()) {
+                    this.registrationErrors.push("Введите пароль");
+                }
+                if (!this.registrationErrors.length) {
+                    await axios.post("/auth/users/", this.register)
+                        .then(() => {
+                            this.toast.success("Успешная регистрация!", {
+                                timeout: 2000
+                            });
+                            this.isRegister = false;
+                            this.register.username = "";
+                            this.register.email = "";
+                            this.register.password = "";
+                        })
+                        .catch((err) => {
+                            this.registrationErrors = Object.values(err.response.data).map(error => error[0]);
+                        });
+                }
+
+            } else {
+                if (!this.login.username.trim()) {
+                    this.loginErrors.push("Введите имя пользователя");
+                }
+                if (!this.login.password.trim()) {
+                    this.loginErrors.push("Введите пароль");
+                }
+                if (!this.loginErrors.length) {
+                    await axios.post("/auth/token/login/", this.login)
+                        .then(() => {
+                            this.toast.success("Успешная авторизация!", {
+                                timeout: 2000
+                            });
+                            this.$router.push(this.$route.query.to || "/decks");
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            this.loginErrors = Object.values(err.response.data).map(error => error[0]);
+                        });
+                }
+
+            }
         }
     }
 }
@@ -182,6 +264,12 @@ export default {
                             padding: 20px;
                         }
                     }
+                }
+
+                .errors {
+                    color: red;
+                    position: absolute;
+                    top: -60px;
                 }
 
                 .submit-btn-box {

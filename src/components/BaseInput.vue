@@ -18,7 +18,7 @@ export default {
     type: {
       type: String,
       validator(value) {
-        return ["text", "number"].includes(value);
+        return ["text", "number", "password"].includes(value);
       },
     },
     step: Function,

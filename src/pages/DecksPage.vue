@@ -23,11 +23,11 @@ export default {
         },
         {
           name: "Слова",
-          id: 0,
+          id: 1,
         },
         {
           name: "Кана",
-          id: 0,
+          id: 2,
         },
       ],
     };
