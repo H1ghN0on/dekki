@@ -7,14 +7,14 @@
                     Вход
                 </div>
                 <form class="form">
-                    <div class="errors" v-if="loginErrors.length">
-                        <div class="error" v-for="error, index of loginErrors" :key="index">{{error}}</div>
+                    <div class="errors" v-if="errors.login.length">
+                        <div class="error" v-for="error, index of errors.login" :key="index">{{error}}</div>
                     </div>
                     <div class="input-box">
-                        <base-input class="input" v-model="login.username" :label="'Имя пользователя'" />
+                        <base-input class="input" v-model="loginFields.username" :label="'Имя пользователя'" />
                     </div>
                     <div class="input-box">
-                        <base-input class="input" v-model="login.password" :label="'Пароль'" :type="'password'" />
+                        <base-input class="input" v-model="loginFields.password" :label="'Пароль'" :type="'password'" />
                     </div>
                     <div class="submit-btn-box">
                         <base-button @click="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
@@ -30,18 +30,19 @@
                 </div>
 
                 <form class="form">
-                    <div class="errors" v-if="registrationErrors.length">
-                        <div class="error" v-for="error, index of registrationErrors" :key="index">{{error}}</div>
+                    <div class="errors" v-if="errors.registration.length">
+                        <div class="error" v-for="error, index of errors.registration" :key="index">{{error}}</div>
                     </div>
 
                     <div class="input-box">
-                        <base-input class="input" v-model="register.username" :label="'Имя пользователя'" />
+                        <base-input class="input" v-model="registrationFields.username" :label="'Имя пользователя'" />
                     </div>
                     <div class="input-box">
-                        <base-input class="input" v-model="register.email" :label="'Почта'" />
+                        <base-input class="input" v-model="registrationFields.email" :label="'Почта'" />
                     </div>
                     <div class="input-box">
-                        <base-input class="input" v-model="register.password" :label="'Пароль'" :type="'password'" />
+                        <base-input class="input" v-model="registrationFields.password" :label="'Пароль'"
+                            :type="'password'" />
                     </div>
                     <div class="submit-btn-box">
                         <base-button @click="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
@@ -57,8 +58,9 @@
 import BaseInput from "@/components/BaseInput"
 import TheHeader from "@/components/TheHeader"
 import BaseButton from "@/components/BaseButton"
-import axios from "axios";
+
 import { useToast } from "vue-toastification";
+import { useAuth } from "@/hooks"
 
 export default {
 
@@ -66,84 +68,35 @@ export default {
     components: { TheHeader, BaseInput, BaseButton, },
     setup() {
         const toast = useToast();
-        return { toast }
+        const { registrationFields, loginFields, errors, handleRegister, handleLogin } = useAuth();
+        return {
+            toast,
+            registrationFields,
+            loginFields,
+            errors,
+            handleRegister,
+            handleLogin,
+        }
     },
 
     data() {
         return {
-            register: {
-                username: "",
-                email: "",
-                password: "",
-            },
-            login: {
-                username: "",
-                password: "",
-            },
-            registrationErrors: [],
-            loginErrors: [],
             isRegister: false,
         }
     },
 
 
     methods: {
-
         toggleAuth() {
             this.isRegister = !this.isRegister;
-            this.registrationErrors = this.loginErrors = [];
+            this.errors.register = this.errors.login = [];
         },
-
         async handleAuth(e) {
             e.preventDefault();
-            this.registrationErrors = this.loginErrors = [];
             if (this.isRegister) {
-                if (!this.register.username.trim()) {
-                    this.registrationErrors.push("Введите имя пользователя");
-                }
-                if (!this.register.email.trim()) {
-                    this.registrationErrors.push("Введите почту");
-                }
-                if (!this.register.password.trim()) {
-                    this.registrationErrors.push("Введите пароль");
-                }
-                if (!this.registrationErrors.length) {
-                    await axios.post("/auth/users/", this.register)
-                        .then(() => {
-                            this.toast.success("Успешная регистрация!", {
-                                timeout: 2000
-                            });
-                            this.isRegister = false;
-                            this.register.username = "";
-                            this.register.email = "";
-                            this.register.password = "";
-                        })
-                        .catch((err) => {
-                            this.registrationErrors = Object.values(err.response.data).map(error => error[0]);
-                        });
-                }
-
+                await this.handleRegister();
             } else {
-                if (!this.login.username.trim()) {
-                    this.loginErrors.push("Введите имя пользователя");
-                }
-                if (!this.login.password.trim()) {
-                    this.loginErrors.push("Введите пароль");
-                }
-                if (!this.loginErrors.length) {
-                    await axios.post("/auth/token/login/", this.login)
-                        .then(() => {
-                            this.toast.success("Успешная авторизация!", {
-                                timeout: 2000
-                            });
-                            this.$router.push(this.$route.query.to || "/decks");
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            this.loginErrors = Object.values(err.response.data).map(error => error[0]);
-                        });
-                }
-
+                await this.handleLogin();
             }
         }
     }
