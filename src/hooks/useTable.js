@@ -1,11 +1,21 @@
-import { reactive, computed, onMounted, watch } from "vue";
+import { reactive, computed, watch } from "vue";
 import {
   renameKeys,
   findDifferentObjectsIndicesInArrays,
 } from "@/utils/ObjectUtils";
 
 export default function useTable(rawStructure, rawData) {
-  const data = reactive({ data: rawData, structure: rawStructure });
+  const data = reactive({
+    data: rawData.map((card) => {
+      let obj = {};
+      card.values.forEach((item) => {
+        obj[item.field.name] = item.value;
+      });
+      return obj;
+    }),
+
+    structure: rawStructure,
+  });
 
   const headers = computed(() =>
     data.structure.map((item) => ({
@@ -16,6 +26,17 @@ export default function useTable(rawStructure, rawData) {
         (item.name ? item.name.toLowerCase() + "_" : "empty_") + item.id,
     }))
   );
+
+  //конечно по-уродски выглядит
+  data.data = data.data.map((row) => {
+    const keys = Object.keys(row);
+    const newKeys = headers.value.map((item) => item.accessor);
+    let obj = {};
+    keys.forEach((element, index) => {
+      obj[element] = newKeys[index];
+    });
+    return renameKeys(row, obj);
+  });
 
   watch(headers, (newValue, oldValue) => {
     if (newValue.length === oldValue.length) {
@@ -30,18 +51,6 @@ export default function useTable(rawStructure, rawData) {
         );
       }
     }
-  });
-
-  onMounted(() => {
-    data.data = data.data.map((row) => {
-      const keys = Object.keys(row);
-      const newKeys = headers.value.map((item) => item.accessor);
-      let obj = {};
-      keys.forEach((element, index) => {
-        obj[element] = newKeys[index];
-      });
-      return renameKeys(row, obj);
-    });
   });
 
   const updateStructure = (newStructure) => {

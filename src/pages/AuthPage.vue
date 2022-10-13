@@ -17,7 +17,7 @@
                         <base-input class="input" v-model="loginFields.password" :label="'Пароль'" :type="'password'" />
                     </div>
                     <div class="submit-btn-box">
-                        <base-button @click="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
+                        <base-button @click.prevent="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
                     </div>
                 </form>
             </div>
@@ -45,7 +45,7 @@
                             :type="'password'" />
                     </div>
                     <div class="submit-btn-box">
-                        <base-button @click="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
+                        <base-button @click.prevent="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
                     </div>
                 </form>
             </div>
@@ -68,40 +68,21 @@ export default {
     components: { TheHeader, BaseInput, BaseButton, },
     setup() {
         const toast = useToast();
-        const { registrationFields, loginFields, errors, handleRegister, handleLogin } = useAuth();
+        const { registrationFields, loginFields, errors, handleAuth, isRegister, toggleAuth } = useAuth();
         return {
             toast,
             registrationFields,
             loginFields,
             errors,
-            handleRegister,
-            handleLogin,
+            handleAuth,
+            isRegister,
+            toggleAuth,
         }
     },
 
-    data() {
-        return {
-            isRegister: false,
-        }
-    },
-
-
-
-    methods: {
-        toggleAuth() {
-            this.isRegister = !this.isRegister;
-            this.errors.register = this.errors.login = [];
-        },
-        async handleAuth(e) {
-            e.preventDefault();
-            if (this.isRegister) {
-                await this.handleRegister();
-            } else {
-                await this.handleLogin();
-            }
-        }
-    }
 }
+
+
 
 </script>
 

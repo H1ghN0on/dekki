@@ -35,6 +35,8 @@ import DeckSettingsTable from "@/components/DeckSettingsTable";
 import BaseSwitchableInput from "@/components/BaseSwitchableInput"
 import { useDeckSettingsForm, useTable } from "@/hooks";
 import { useRoute } from "vue-router";
+import axios from "axios";
+
 export default {
     name: "DeckSettingsPage",
     components: {
@@ -55,32 +57,45 @@ export default {
 
     async setup() {
         const route = useRoute();
-        const rawData = [
-            {
-                rofl: "Кто1",
-                attr2: "Куда1",
-                attr3: "А я по1",
-                attr4: "Тапочкам1",
 
-            },
-            {
-                rofl: "Кто2",
-                attr2: "Куда2",
-                attr3: "А я по2",
-                attr4: "Тапочкам2",
-            },
-            {
-                rofl: "Кто3",
-                attr2: "Куда3",
-                attr3: "А я по3",
-                attr4: "Тапочкам3",
-            },
-        ];
+        const getDeckDetails = async (deckSlug) => {
+            const data = await axios.get(`/decks/get/${deckSlug}`).then((res) => {
+                const { name, fields, cards } = res.data;
+                const dbStructure = {
+                    front: fields
+                        .filter((item) => item.side === "front")
+                        .sort((a, b) => a.position > b.position)
+                        .map((item) => ({
+                            ...item,
+                            type: {
+                                accessor: item.type,
+                                name: item.type === "main" ? "Больше" : "Меньше",
+                            },
+                        })),
+                    back: fields
+                        .filter((item) => item.side === "back")
+                        .sort((a, b) => a.position > b.position)
+                        .map((item) => ({
+                            ...item,
+                            type: {
+                                accessor: item.type,
+                                name: item.type === "main" ? "Больше" : "Меньше",
+                            },
+                        })),
+                };
+
+                return { name, dbStructure, cards };
+            });
+            return data;
+        };
+
+        const { name, dbStructure, cards } = await getDeckDetails(route.params.deckSlug);
+
 
         const deckStructureToTableStructure = (deckStr) => {
             return deckStr.front.concat(deckStr.back).map((item) => ({
                 ...item,
-                accessor: item.name + "_" + item.id,
+                accessor: item.name.toLowerCase() + "_" + item.id,
             }));
         }
         const {
@@ -91,15 +106,15 @@ export default {
             handleDeleteFromFront,
             handleDeleteFromBack,
             step,
-            structureWatcher
-        } = await useDeckSettingsForm(route.params.deckSlug);
+            structureWatcher,
+        } = await useDeckSettingsForm(name, dbStructure);
 
         const {
             updateStructure,
             data,
             headers,
             handleDeleteRow
-        } = useTable(deckStructureToTableStructure(structure), rawData);
+        } = useTable(deckStructureToTableStructure(structure), cards);
 
         structureWatcher((newValue) => {
             const newStructure = deckStructureToTableStructure(newValue);

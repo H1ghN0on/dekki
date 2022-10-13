@@ -1,40 +1,6 @@
 import { reactive, ref, watch } from "vue";
-import axios from "axios";
 
-const getDeckDetails = async (deckSlug) => {
-  const data = await axios.get(`/decks/get/${deckSlug}`).then((res) => {
-    const { name, fields } = res.data;
-    const dbStructure = {
-      front: fields
-        .filter((item) => item.side === "front")
-        .sort((a, b) => a.position > b.position)
-        .map((item) => ({
-          ...item,
-          type: {
-            accessor: item.type,
-            name: item.type === "main" ? "Больше" : "Меньше",
-          },
-        })),
-      back: fields
-        .filter((item) => item.side === "back")
-        .sort((a, b) => a.position > b.position)
-        .map((item) => ({
-          ...item,
-          type: {
-            accessor: item.type,
-            name: item.type === "main" ? "Больше" : "Меньше",
-          },
-        })),
-    };
-
-    return { name, dbStructure };
-  });
-  return data;
-};
-
-export default async function useDeckSettingsForm(deckSlug) {
-  const { dbStructure, name } = await getDeckDetails(deckSlug);
-
+export default async function useDeckSettingsForm(name, dbStructure) {
   const setupedDeckName = ref(name);
   const structure = reactive(dbStructure);
 

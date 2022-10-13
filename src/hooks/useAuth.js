@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import axios from "axios";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
@@ -9,6 +9,8 @@ export default function useAuth() {
   const router = useRouter();
   const route = useRoute();
   const toast = useToast();
+
+  const isRegister = ref(false);
   const registrationFields = reactive({
     username: "",
     email: "",
@@ -30,6 +32,7 @@ export default function useAuth() {
   };
 
   const onRegistrationSuccess = () => {
+    toggleAuth();
     toast.success("Успешная регистрация!", {
       timeout: 2000,
     });
@@ -104,12 +107,26 @@ export default function useAuth() {
     }
   };
 
+  const toggleAuth = () => {
+    isRegister.value = !isRegister.value;
+    errors.register = errors.login = [];
+  };
+
+  const handleAuth = async () => {
+    if (isRegister.value) {
+      await handleRegister();
+    } else {
+      await handleLogin();
+    }
+  };
+
   return {
     registrationFields,
     loginFields,
     errors,
-    handleRegister,
-    handleLogin,
+    handleAuth,
     handleLogout,
+    isRegister,
+    toggleAuth,
   };
 }
