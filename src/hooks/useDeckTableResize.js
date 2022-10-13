@@ -48,7 +48,6 @@ export default function useDeckTableResize(headers) {
     }
   };
   const resize = (e) => {
-    console.log("hi");
     if (state.isResizing) {
       const x = e.clientX;
       const percentDiff = ((state.initX - x) / window.screen.width) * 100;

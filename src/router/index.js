@@ -30,7 +30,7 @@ const routes = [
     beforeEnter: isAuthenticated,
   },
   {
-    path: "/settings",
+    path: "/settings/:deckSlug",
     component: DeckSettingsPage,
     beforeEnter: isAuthenticated,
   },

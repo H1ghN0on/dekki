@@ -1,6 +1,41 @@
-import { reactive } from "vue";
+import { reactive, ref, watch } from "vue";
+import axios from "axios";
 
-export default function useDeckSettingsForm(dbStructure) {
+const getDeckDetails = async (deckSlug) => {
+  const data = await axios.get(`/decks/get/${deckSlug}`).then((res) => {
+    const { name, fields } = res.data;
+    const dbStructure = {
+      front: fields
+        .filter((item) => item.side === "front")
+        .sort((a, b) => a.position > b.position)
+        .map((item) => ({
+          ...item,
+          type: {
+            accessor: item.type,
+            name: item.type === "main" ? "Больше" : "Меньше",
+          },
+        })),
+      back: fields
+        .filter((item) => item.side === "back")
+        .sort((a, b) => a.position > b.position)
+        .map((item) => ({
+          ...item,
+          type: {
+            accessor: item.type,
+            name: item.type === "main" ? "Больше" : "Меньше",
+          },
+        })),
+    };
+
+    return { name, dbStructure };
+  });
+  return data;
+};
+
+export default async function useDeckSettingsForm(deckSlug) {
+  const { dbStructure, name } = await getDeckDetails(deckSlug);
+
+  const setupedDeckName = ref(name);
   const structure = reactive(dbStructure);
 
   const handleAddFieldClick = (name) => {
@@ -11,7 +46,7 @@ export default function useDeckSettingsForm(dbStructure) {
         name: "Больше",
         accessor: "main",
       },
-      fontSize: 8,
+      fontSize: 24,
     };
     if (structure[name].length < 4) {
       structure[name].push({
@@ -48,12 +83,18 @@ export default function useDeckSettingsForm(dbStructure) {
     handleDeleteFieldClick("back", id);
   };
 
+  const structureWatcher = (watcher) => {
+    return watch(structure, watcher);
+  };
+
   return {
+    setupedDeckName,
     structure,
     step,
     handleAddToFront,
     handleAddToBack,
     handleDeleteFromFront,
     handleDeleteFromBack,
+    structureWatcher,
   };
 }

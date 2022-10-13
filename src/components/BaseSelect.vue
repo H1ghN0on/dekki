@@ -6,12 +6,7 @@
     </div>
     <div class="list-container">
       <div class="list" :class="{ active: isSelectActive }">
-        <div
-          v-for="item in items"
-          :key="item.id"
-          @click="onItemSelect(item)"
-          class="item"
-        >
+        <div v-for="item in items" :key="item.id" @click="onItemSelect(item)" class="item">
           {{ item.name }}
         </div>
       </div>
@@ -68,6 +63,7 @@ export default {
   cursor: pointer;
   justify-content: center;
   align-items: start;
+
   .active {
     width: 100%;
     display: flex;
@@ -80,9 +76,11 @@ export default {
     font-size: 0.9em;
     font-weight: bold;
   }
+
   .list-container {
     position: relative;
     width: 100%;
+
     .list {
       background: #ffffff;
       z-index: 100;
@@ -97,7 +95,7 @@ export default {
         flex-direction: column;
         align-items: start;
 
-        & > .item {
+        &>.item {
           width: 100%;
           margin-bottom: 10px;
         }

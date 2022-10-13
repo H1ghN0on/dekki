@@ -1,19 +1,24 @@
 <template>
   <the-header />
   <deck-list v-if="!isLoading" :decks="decks" />
-  <div v-else>Загрузка...</div>
+  <div v-else class="loading">
+    <base-loading />
+  </div>
 </template>
 
 <script>
 import TheHeader from "@/components/TheHeader.vue";
 import DeckList from "@/components/DeckList.vue";
 import axios from "axios"
+import BaseLoading from "@/components/BaseLoading";
 export default {
   name: "DecksPage",
   components: {
     TheHeader,
     DeckList,
+    BaseLoading
   },
+
 
   async mounted() {
     this.isLoading = true;
@@ -40,5 +45,12 @@ export default {
   width: 70vw;
   margin: 0 auto;
   margin-top: 90px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
 }
 </style>
