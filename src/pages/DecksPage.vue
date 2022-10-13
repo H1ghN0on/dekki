@@ -1,12 +1,13 @@
 <template>
   <the-header />
-  <deck-list :decks="decks" />
+  <deck-list v-if="!isLoading" :decks="decks" />
+  <div v-else>Загрузка...</div>
 </template>
 
 <script>
 import TheHeader from "@/components/TheHeader.vue";
 import DeckList from "@/components/DeckList.vue";
-
+import axios from "axios"
 export default {
   name: "DecksPage",
   components: {
@@ -14,22 +15,21 @@ export default {
     DeckList,
   },
 
+  async mounted() {
+    this.isLoading = true;
+    await axios.get("/decks/get-my/")
+      .then(res => this.decks = res.data)
+      .catch(err => {
+        console.log(err);
+      })
+    this.isLoading = false;
+  },
+
+
   data() {
     return {
-      decks: [
-        {
-          name: "Кандзи",
-          id: 0,
-        },
-        {
-          name: "Слова",
-          id: 1,
-        },
-        {
-          name: "Кана",
-          id: 2,
-        },
-      ],
+      isLoading: false,
+      decks: [],
     };
   },
 };
@@ -37,7 +37,7 @@ export default {
 
 <style lang="scss" scoped>
 .deck-list {
-  width: 60vw;
+  width: 70vw;
   margin: 0 auto;
   margin-top: 90px;
 }

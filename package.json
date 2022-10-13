@@ -12,6 +12,7 @@
     "bootstrap-icons-vue": "^1.8.1",
     "bulma-toast": "^2.4.1",
     "core-js": "^3.8.3",
+    "js-cookie": "^3.0.1",
     "sass": "^1.54.4",
     "sass-loader": "^13.0.2",
     "vue": "^3.2.13",

@@ -86,6 +86,7 @@ export default {
     },
 
 
+
     methods: {
         toggleAuth() {
             this.isRegister = !this.isRegister;

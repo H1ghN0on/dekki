@@ -1,11 +1,17 @@
 <template>
   <div class="deck-list">
     <div class="deck deck-add">
-      <div class="name">Добавить сет</div>
+      <span class="btn pointer">Добавить сет</span>
     </div>
-    <div v-for="deck in decks" :key="deck.id">
-      <deck-list-item :deck="deck" />
+    <div v-if="decks.length" class="list">
+      <div v-for="deck in decks" :key="deck.id">
+        <deck-list-item :deck="deck" />
+      </div>
     </div>
+    <div v-else class="empty-list">
+      Пусто
+    </div>
+
   </div>
 </template>
 
@@ -27,11 +33,16 @@ export default {
 
 <style lang="scss" scoped>
 .deck-list {
-  & :last-child {
-    margin-bottom: 0;
+  .deck-add {
+    font-size: 1.4em;
+    font-weight: bold;
   }
-  & > div {
-    margin-bottom: 15px;
+
+  .list {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 30px;
   }
 }
 </style>

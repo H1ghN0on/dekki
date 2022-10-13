@@ -1,37 +1,28 @@
 <template>
-  <div class="deck-info">
-    <div class="deck">
-      <div class="name">{{ deck.name }}</div>
-      <div class="settings">
-        <div>
-          <b-icon-gear-fill @click="toggleSettings" class="btn-settings pointer" />
-        </div>
-        <div>
-          <base-button class="btn-test">Test</base-button>
-        </div>
+  <div class="card-wrapper">
+    <div class="card">
+      <div class="info">
+        <div class="info-item name">{{ deck.name }}</div>
+        <div class="info-item cards-number">90 карточек</div>
       </div>
+      <base-button class="test-btn">Тест</base-button>
     </div>
-    <Transition>
-      <div v-if="isSettingsActive" class="deck-settings">
-        <router-link to="/update">
-          <base-button class="btn">Добавить</base-button>
-        </router-link>
-        <router-link to="/settings">
-          <base-button class="btn">Изменить</base-button>
-        </router-link>
-
-        <base-button class="btn danger">Удалить</base-button>
-      </div>
-    </Transition>
+    <div class="card-settings">
+      <b-icon-plus-circle-fill class="card-settings-item add pointer" />
+      <b-icon-gear-fill class="card-settings-item settings pointer" />
+      <b-icon-trash3-fill class="card-settings-item remove pointer" />
+    </div>
   </div>
 </template>
 
 <script>
-import { BIconGearFill } from "bootstrap-icons-vue";
-import BaseButton from "@/components/BaseButton";
 
+import BaseButton from "@/components/BaseButton";
+import { BIconPlusCircleFill, BIconTrash3Fill, BIconGearFill } from "bootstrap-icons-vue";
 export default {
   components: {
+    BIconPlusCircleFill,
+    BIconTrash3Fill,
     BIconGearFill,
     BaseButton,
   },
@@ -42,80 +33,87 @@ export default {
     },
   },
 
-  data() {
-    return {
-      isSettingsActive: false,
-    };
-  },
 
-  methods: {
-    toggleSettings() {
-      this.isSettingsActive = !this.isSettingsActive;
-    },
-  },
+
 };
 </script>
 
 <style lang="scss" scoped>
-.deck-info {
+.card-wrapper {
+  position: relative;
+
+}
+
+.card {
+  position: relative;
+
   background: white;
   padding: 20px 30px;
-
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
-}
-
-.deck {
   display: flex;
-  align-items: center;
-
+  flex-direction: column;
   justify-content: space-between;
-  margin-bottom: 10px;
+  border-radius: 10px;
 
-  .name {
-    font-size: 2.25em;
-    font-weight: bold;
-  }
+  .info {
+    text-align: center;
 
-  .settings {
-    display: flex;
-    align-items: center;
-
-    &>div {
-      margin-right: 25px;
+    .name {
+      font-size: 2em;
+      font-weight: bold;
     }
 
-    & :last-child {
-      margin-right: 0;
-    }
-
-    .btn-settings {
-      width: 40px;
-      height: 40px;
+    .cards-number {
+      margin-top: 10px;
+      font-size: 1em;
     }
   }
+
+  .test-btn {
+    margin-top: 50px;
+    font-size: 1em;
+    padding: 10px;
+  }
+
 }
 
-.deck-settings {
+.card-settings {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-top: 2px;
+  z-index: 100;
+  width: 90%;
+  background: white;
   display: flex;
   justify-content: space-between;
-  padding-top: 10px;
-  border-top: 1px solid silver;
+  border: 2px solid #c0c0c0;
+  border-radius: 0 0 10px 10px;
+  border-top: none;
+  padding: 0 30px;
 
 
+  max-height: 0;
+  transition: .2s ease-in;
 
-  .btn.danger {
-    background: $button-danger;
-  }
-}
-
-.v-leave-active,
-.v-enter-active {
-  transition: 0.3s;
-}
-
-.v-enter-from,
-.v-leave-to {
+  overflow: hidden;
   opacity: 0;
-  transform: translate(0, -10%);
+
+  .card-settings-item {
+    font-size: 1.5em;
+
+    &.remove {
+      color: $danger-text;
+    }
+  }
+}
+
+.card-settings:hover,
+.card:hover+.card-settings {
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  max-height: 50px;
+  opacity: 1;
+  padding: 10px 30px;
+  transition: .2s ease-out;
 }
 </style>

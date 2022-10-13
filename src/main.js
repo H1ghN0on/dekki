@@ -6,16 +6,11 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import Toast, { POSITION } from "vue-toastification";
 import store from "@/store";
+
 // Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
 
 axios.defaults.baseURL = "http://localhost:8000";
-
-const token = localStorage.getItem("token");
-
-if (token) {
-  axios.defaults.headers.common["Authorization"] = token;
-}
 
 const toastOptions = {
   position: POSITION.BOTTOM_RIGHT,

@@ -34,6 +34,7 @@ const routes = [
     component: DeckSettingsPage,
     beforeEnter: isAuthenticated,
   },
+
   {
     path: "/auth",
     component: AuthPage,
