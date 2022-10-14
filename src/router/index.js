@@ -1,5 +1,6 @@
 import { DeckSettingsPage, DecksPage, DeckUpdatePage, AuthPage } from "@/pages";
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuth } from "@/hooks";
 import store from "@/store";
 
 const ifNotAuthenticated = (to, from, next) => {
@@ -14,8 +15,15 @@ const isAuthenticated = (to, from, next) => {
   if (store.getters.isAuthenticated) {
     next();
     return;
+  } else {
+    //??
+    if (localStorage.getItem("token")) {
+      const { handleLogoutOutsideComponent } = useAuth();
+      handleLogoutOutsideComponent(store);
+    }
+
+    next("/auth");
   }
-  next("/auth");
 };
 
 const routes = [
@@ -25,7 +33,7 @@ const routes = [
     beforeEnter: isAuthenticated,
   },
   {
-    path: "/update",
+    path: "/update/:deckSlug",
     component: DeckUpdatePage,
     beforeEnter: isAuthenticated,
   },

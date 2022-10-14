@@ -1,5 +1,5 @@
 <template>
-    <div class="lds-ripple">
+    <div class="lds-ripple" :style="cssProps">
         <div></div>
         <div></div>
     </div>
@@ -7,20 +7,49 @@
 
 <script>
 export default {
-    name: "BaseLoading"
+    name: "BaseLoading",
+    props: {
+        width: {
+            type: Number,
+            default: 180,
+        },
+        height: {
+            type: Number,
+            default: 180,
+        },
+        color: {
+            type: String,
+            default: "black"
+        },
+        borderWidth: {
+            type: Number,
+            default: 4,
+        }
+    },
+
+    computed: {
+        cssProps() {
+            return {
+                '--loading-width': this.width + "px",
+                '--loading-height': this.height + "px",
+                '--loading-color': this.color,
+                '--border-width': this.borderWidth + "px",
+            }
+        }
+    }
 }
 </script>
 
 <style scoped lang="scss">
 .lds-ripple {
     position: relative;
-    width: 180px;
-    height: 180px;
+    width: var(--loading-width);
+    height: var(--loading-height);
 }
 
 .lds-ripple div {
     position: absolute;
-    border: 4px solid black;
+    border: var(--border-width) solid var(--loading-color);
     opacity: 1;
     border-radius: 50%;
     animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
@@ -32,24 +61,24 @@ export default {
 
 @keyframes lds-ripple {
     0% {
-        top: 90px;
-        left: 90px;
+        top: calc(var(--loading-width)/2);
+        left: calc(var(--loading-height)/2);
         width: 0;
         height: 0;
         opacity: 0;
     }
 
     4.9% {
-        top: 90px;
-        left: 90px;
+        top: calc(var(--loading-width)/2);
+        left: calc(var(--loading-height)/2);
         width: 0;
         height: 0;
         opacity: 0;
     }
 
     5% {
-        top: 90px;
-        left: 90px;
+        top: calc(var(--loading-width)/2);
+        left: calc(var(--loading-height)/2);
         width: 0;
         height: 0;
         opacity: 1;
@@ -59,8 +88,8 @@ export default {
     100% {
         top: 0px;
         left: 0px;
-        width: 180px;
-        height: 180px;
+        width: var(--loading-width);
+        height: var(--loading-height);
         opacity: 0;
     }
 }

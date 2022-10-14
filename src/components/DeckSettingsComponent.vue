@@ -33,9 +33,8 @@ import DeckSettingsForm from "@/components/DeckSettingsForm";
 import DeckUpdatePreview from "@/components/DeckUpdatePreview";
 import DeckSettingsTable from "@/components/DeckSettingsTable";
 import BaseSwitchableInput from "@/components/BaseSwitchableInput"
-import { useDeckSettingsForm, useTable } from "@/hooks";
+import { useDeckSettingsForm, useTable, useDeck } from "@/hooks";
 import { useRoute } from "vue-router";
-import axios from "axios";
 
 export default {
     name: "DeckSettingsPage",
@@ -57,47 +56,23 @@ export default {
 
     async setup() {
         const route = useRoute();
-
-        const getDeckDetails = async (deckSlug) => {
-            const data = await axios.get(`/decks/get/${deckSlug}`).then((res) => {
-                const { name, fields, cards } = res.data;
-                const dbStructure = {
-                    front: fields
-                        .filter((item) => item.side === "front")
-                        .sort((a, b) => a.position > b.position)
-                        .map((item) => ({
-                            ...item,
-                            type: {
-                                accessor: item.type,
-                                name: item.type === "main" ? "Больше" : "Меньше",
-                            },
-                        })),
-                    back: fields
-                        .filter((item) => item.side === "back")
-                        .sort((a, b) => a.position > b.position)
-                        .map((item) => ({
-                            ...item,
-                            type: {
-                                accessor: item.type,
-                                name: item.type === "main" ? "Больше" : "Меньше",
-                            },
-                        })),
-                };
-
-                return { name, dbStructure, cards };
-            });
-            return data;
-        };
-
-        const { name, dbStructure, cards } = await getDeckDetails(route.params.deckSlug);
-
-
+        const { getStructuredDeck } = useDeck();
         const deckStructureToTableStructure = (deckStr) => {
             return deckStr.front.concat(deckStr.back).map((item) => ({
                 ...item,
                 accessor: item.name.toLowerCase() + "_" + item.id,
             }));
         }
+
+        const { name, dbStructure, cards } = await getStructuredDeck(route.params.deckSlug, (item) => ({
+            ...item,
+            type: {
+                accessor: item.type,
+                name: item.type === "main" ? "Больше" : "Меньше",
+            }
+        }));
+
+
         const {
             setupedDeckName,
             structure,

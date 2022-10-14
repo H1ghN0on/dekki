@@ -5,19 +5,55 @@
 <script>
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useAuth } from "@/hooks";
+import { useToast } from "vue-toastification"
 export default {
+  computed: {
+    token() { return this.$store.state.token }
+  },
 
-  beforeCreate() {
-    const token = this.$store.state.token;
-
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = "Token " + token;
-      axios.defaults.headers.common["X-CSRFToken"] = Cookies.get("csrftoken");
-    } else {
-      axios.defaults.headers.common['Authorization'] = ""
+  methods: {
+    setToken() {
+      if (this.token) {
+        axios.defaults.headers.common["Authorization"] = "Token " + this.token;
+        axios.defaults.headers.common["X-CSRFToken"] = Cookies.get("csrftoken");
+      } else {
+        axios.defaults.headers.common['Authorization'] = ""
+      }
     }
+  },
 
+  setup() {
+
+    const toast = useToast();
+    const { handleLogout } = useAuth();
+    axios.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        if (error.response.status === 401) {
+
+          handleLogout();
+          toast.error("Вы не авторизованы!", {
+            timeout: 2000,
+          })
+        }
+        return error;
+      }
+    );
+  },
+
+  mounted() {
+
+    this.setToken()
+  },
+  watch: {
+    token() {
+      this.setToken()
+    },
   }
+
 
 }
 </script>

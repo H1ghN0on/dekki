@@ -12,6 +12,10 @@
         <slot name="back"></slot>
       </div>
     </div>
+
+    <slot name="submit-btn"></slot>
+
+
   </form>
 </template>
 
@@ -32,6 +36,8 @@ export default {
   scrollbar-width: thin;
   background: white;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+
+
 
   .base-deck-form-part {
     .title {
@@ -59,5 +65,7 @@ export default {
       }
     }
   }
+
+
 }
 </style>

@@ -17,7 +17,9 @@
                         <base-input class="input" v-model="loginFields.password" :label="'Пароль'" :type="'password'" />
                     </div>
                     <div class="submit-btn-box">
-                        <base-button @click.prevent="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
+                        <base-button :isLoading="isLoading" @click.prevent="handleSubmitForm" class="submit-btn"
+                            type="'submit'">Вперёд
+                        </base-button>
                     </div>
                 </form>
             </div>
@@ -45,7 +47,9 @@
                             :type="'password'" />
                     </div>
                     <div class="submit-btn-box">
-                        <base-button @click.prevent="handleAuth" class="submit-btn" type="'submit'">Вперёд</base-button>
+                        <base-button :isLoading="isLoading" @click.prevent="handleSubmitForm" class="submit-btn"
+                            type="'submit'">Вперёд
+                        </base-button>
                     </div>
                 </form>
             </div>
@@ -58,8 +62,6 @@
 import BaseInput from "@/components/BaseInput"
 import TheHeader from "@/components/TheHeader"
 import BaseButton from "@/components/BaseButton"
-
-import { useToast } from "vue-toastification";
 import { useAuth } from "@/hooks"
 
 export default {
@@ -67,10 +69,8 @@ export default {
     name: "AuthPage",
     components: { TheHeader, BaseInput, BaseButton, },
     setup() {
-        const toast = useToast();
         const { registrationFields, loginFields, errors, handleAuth, isRegister, toggleAuth } = useAuth();
         return {
-            toast,
             registrationFields,
             loginFields,
             errors,
@@ -79,6 +79,20 @@ export default {
             toggleAuth,
         }
     },
+
+    data() {
+        return {
+            isLoading: false,
+        }
+    },
+
+    methods: {
+        async handleSubmitForm() {
+            this.isLoading = true;
+            await this.handleAuth();
+            this.isLoading = false;
+        }
+    }
 
 }
 

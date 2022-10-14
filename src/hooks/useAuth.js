@@ -31,6 +31,11 @@ export default function useAuth() {
     router.push("/auth");
   };
 
+  const handleLogoutOutsideComponent = (myStore) => {
+    myStore.commit("removeToken");
+    localStorage.removeItem("token");
+  };
+
   const onRegistrationSuccess = () => {
     toggleAuth();
     toast.success("Успешная регистрация!", {
@@ -128,5 +133,6 @@ export default function useAuth() {
     handleLogout,
     isRegister,
     toggleAuth,
+    handleLogoutOutsideComponent,
   };
 }

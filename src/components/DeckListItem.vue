@@ -8,9 +8,9 @@
       <base-button class="test-btn">Тест</base-button>
     </div>
     <div class="card-settings">
-
-      <b-icon-plus-circle-fill class="card-settings-item add pointer" />
-
+      <router-link :to="'/update/'+ deck.slug">
+        <b-icon-plus-circle-fill class="card-settings-item add pointer" />
+      </router-link>
       <router-link :to="'/settings/'+ deck.slug">
         <b-icon-gear-fill class="card-settings-item settings pointer" />
       </router-link>
