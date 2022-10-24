@@ -8,10 +8,10 @@
       <base-button class="test-btn">Тест</base-button>
     </div>
     <div class="card-settings">
-      <router-link :to="'/update/'+ deck.slug">
+      <router-link :to="'/update/' + deck.slug">
         <b-icon-plus-circle-fill class="card-settings-item add pointer" />
       </router-link>
-      <router-link :to="'/settings/'+ deck.slug">
+      <router-link :to="'/settings/' + deck.slug">
         <b-icon-gear-fill class="card-settings-item settings pointer" />
       </router-link>
       <b-icon-trash3-fill class="card-settings-item remove pointer" />
@@ -45,7 +45,7 @@ export default {
 <style lang="scss" scoped>
 .card-wrapper {
   position: relative;
-
+  width: 100%;
 }
 
 .card {
@@ -58,11 +58,17 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   border-radius: 10px;
+  width: 100%;
 
   .info {
     text-align: center;
+    width: 100%;
 
     .name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
       font-size: 2em;
       font-weight: bold;
     }

@@ -279,11 +279,11 @@ export default {
                 }
 
                 .title {
-                    transition-delay: .2s;
+                    transition-delay: .3s;
                 }
 
                 .form {
-                    transition-delay: .3s;
+                    transition-delay: .4s;
 
                     .input-box {
                         .input {

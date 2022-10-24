@@ -11,7 +11,8 @@
         width: header.width + '%',
         whiteSpace: header.width > 20 ? 'normal' : 'nowrap',
       }" v-for="header in computedHeaders" :key="header.id">
-        <base-switchable-input v-model="item[header.accessor]" :placeholder="'Пусто'" />
+        <base-switchable-input v-model="item[header.accessor].value"
+          @update:modelValue="addToSave(item[header.accessor])" :placeholder="'Пусто'" />
       </td>
       <td class="settings">
         <div class="setting">
@@ -25,11 +26,13 @@
 <script>
 import { BIconX } from "bootstrap-icons-vue";
 import { useDeckTableResize } from "@/hooks"
+import { localModelValueMixin } from "@/mixins";
 import BaseSwitchableInput from "@/components/BaseSwitchableInput";
 import { ref, onMounted } from 'vue';
 export default {
   name: "DeckSettingsTable",
   components: { BIconX, BaseSwitchableInput },
+  mixins: [localModelValueMixin],
   props: {
     headers: {
       type: Array,
@@ -42,7 +45,9 @@ export default {
     handleDeleteRow: {
       type: Function,
       required: true,
-    }
+    },
+
+
   },
   setup(props) {
     const tableRef = ref(null);
@@ -58,7 +63,16 @@ export default {
     headers(newValue) {
       this.updateHeaders(newValue);
     }
-  }
+  },
+
+  methods: {
+    addToSave(item) {
+      const arr = this.localModelValue.filter(obj => obj.id !== item.id)
+      arr.push(item)
+      this.localModelValue = arr
+    }
+  },
+
 
 };
 </script>

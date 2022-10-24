@@ -3,6 +3,23 @@ import { useToast } from "vue-toastification";
 export default function useDeck() {
   const toast = useToast();
 
+  const getRawStructure = (structure) => {
+    return [
+      ...structure.front.map((item, index) => ({
+        ...item,
+        side: "front",
+        position: index,
+        type: item.type.accessor,
+      })),
+      ...structure.back.map((item, index) => ({
+        ...item,
+        side: "back",
+        position: index,
+        type: item.type.accessor,
+      })),
+    ];
+  };
+
   const getStructuredDeck = async (deckSlug, toMap) => {
     const data = await axios.get(`/decks/get/${deckSlug}`).then((res) => {
       const { id, name, fields, cards } = res.data;
@@ -19,6 +36,7 @@ export default function useDeck() {
 
       return { id, name, dbStructure, cards };
     });
+
     return data;
   };
 
@@ -56,5 +74,6 @@ export default function useDeck() {
     getStructuredDeck,
     getMyDecks,
     addCardToDeck,
+    getRawStructure,
   };
 }

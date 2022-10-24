@@ -1,7 +1,7 @@
 <template>
   <input @change="onChange" ref="inputRef" v-if="isInput" class="input switchable" type="text" @blur="isInput = false"
     :value="modelValue" @input="updateValue" />
-  <span :style="{cursor: 'text'}" v-else @click="isInput = true"
+  <span :style="{ cursor: 'text' }" v-else @click="isInput = true"
     v-html="modelValue ? modelValue : `<i>${placeholder}</i>`" />
 </template>
 

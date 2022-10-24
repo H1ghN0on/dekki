@@ -3,10 +3,18 @@ import { reactive, ref, watch } from "vue";
 export default async function useDeckSettingsForm(name, dbStructure) {
   const setupedDeckName = ref(name);
   const structure = reactive(dbStructure);
+  const isStructureSaved = ref(true);
+
+  const forSave = (foo) => {
+    return (...args) => {
+      isStructureSaved.value = false;
+      foo(...args);
+    };
+  };
 
   const handleAddFieldClick = (name) => {
     const defaultFields = {
-      id: Math.floor(Math.random() * 10000),
+      id: -Math.floor(Math.random() * 10000),
       name: "",
       type: {
         name: "Больше",
@@ -14,6 +22,7 @@ export default async function useDeckSettingsForm(name, dbStructure) {
       },
       fontSize: 24,
     };
+
     if (structure[name].length < 4) {
       structure[name].push({
         id: defaultFields.id,
@@ -33,24 +42,24 @@ export default async function useDeckSettingsForm(name, dbStructure) {
     return value < 28 ? 4 : value < 48 ? 8 : 16;
   };
 
-  const handleAddToFront = () => {
+  const handleAddToFront = forSave(() => {
     handleAddFieldClick("front");
-  };
+  });
 
-  const handleAddToBack = () => {
+  const handleAddToBack = forSave(() => {
     handleAddFieldClick("back");
-  };
+  });
 
-  const handleDeleteFromFront = (id) => {
+  const handleDeleteFromFront = forSave((id) => {
     handleDeleteFieldClick("front", id);
-  };
+  });
 
-  const handleDeleteFromBack = (id) => {
+  const handleDeleteFromBack = forSave((id) => {
     handleDeleteFieldClick("back", id);
-  };
+  });
 
   const structureWatcher = (watcher) => {
-    return watch(structure, watcher);
+    return watch(structure, forSave(watcher));
   };
 
   return {
@@ -62,5 +71,6 @@ export default async function useDeckSettingsForm(name, dbStructure) {
     handleDeleteFromFront,
     handleDeleteFromBack,
     structureWatcher,
+    isStructureSaved,
   };
 }

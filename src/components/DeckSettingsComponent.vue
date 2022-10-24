@@ -1,13 +1,14 @@
 <template>
 
     <div>
-        <div @click="saveDeck" v-if="!isSaved" class="save-btn pointer">
+        <div @click="saveDeck" :class="{'active': !isSaved && !isSaving, 'process': isSaving}" class="save-btn pointer">
             <BIconFileEarmarkFill class="save-btn-icon" />
         </div>
         <div class="container">
             <div class="deck-name-container">
                 <div class="deck-name">
-                    <base-switchable-input v-model="deckName" :placeholder="'Пусто'" />
+                    <base-switchable-input v-model="setupedDeckName" @update:modelValue="isNameSaved = false"
+                        :placeholder="'Пусто'" />
                 </div>
 
             </div>
@@ -18,9 +19,9 @@
                 <DeckUpdatePreview :front="preview.front" :back="preview.back" class="preview" />
             </div>
             <div class="table-container">
-                <DeckSettingsTable :handleDeleteRow="handleDeleteRow" :headers="headers" :data="data.data" />
+                <DeckSettingsTable v-model="tableDataForSave" :handleDeleteRow="handleDeleteRow" :headers="headers"
+                    :data="data.data" />
             </div>
-
         </div>
     </div>
 
@@ -35,6 +36,7 @@ import DeckSettingsTable from "@/components/DeckSettingsTable";
 import BaseSwitchableInput from "@/components/BaseSwitchableInput"
 import { useDeckSettingsForm, useTable, useDeck } from "@/hooks";
 import { useRoute } from "vue-router";
+import axios from "axios"
 
 export default {
     name: "DeckSettingsPage",
@@ -47,16 +49,64 @@ export default {
     },
 
     methods: {
-        saveDeck() {
-            this.isSaved = true;
-            console.log("saved!");
+        checkSameAndEmptyValues(array) {
+            const fieldNames = [];
+
+            for (let field of array) {
+                if (field.name && !fieldNames.includes(field.name.toLowerCase())) {
+                    fieldNames.push(field.name.toLowerCase());
+                } else return false;
+            }
+
+            return true
+        },
+
+        async saveDeck() {
+            const deck_slug = this.$route.params.deckSlug;
+            this.isSaving = true;
+            try {
+                //Save name 
+                if (!this.isNameSaved && this.setupedDeckName) {
+                    await axios.put(`/decks/update/${this.$route.params.deckSlug}/${this.setupedDeckName}/`)
+                    this.isNameSaved = true
+                }
+
+                //Save fields
+                if (!this.isStructureSaved) {
+                    const dbStructure = this.getRawStructure(this.structure)
+                    if (!this.checkSameAndEmptyValues(dbStructure)) {
+                        this.isSaving = false;
+                        return;
+                    }
+
+
+
+                    await axios.post(`/decks/update/fields/`, {
+                        data: dbStructure,
+                        deck_slug
+                    })
+                    this.isStructureSaved = true;
+                }
+
+                //Save values
+                if (this.tableDataForSave.length) {
+                    await axios.post(`/decks/update/values/`, {
+                        data: this.tableDataForSave,
+                        deck_slug
+                    })
+                    this.tableDataForSave = [];
+                }
+            } catch (e) {
+                console.log(e);
+            }
+            this.isSaving = false;
         }
     },
 
 
     async setup() {
         const route = useRoute();
-        const { getStructuredDeck } = useDeck();
+        const { getStructuredDeck, getRawStructure } = useDeck();
         const deckStructureToTableStructure = (deckStr) => {
             return deckStr.front.concat(deckStr.back).map((item) => ({
                 ...item,
@@ -72,6 +122,8 @@ export default {
             }
         }));
 
+        console.log(dbStructure)
+
 
         const {
             setupedDeckName,
@@ -82,13 +134,15 @@ export default {
             handleDeleteFromBack,
             step,
             structureWatcher,
+            isStructureSaved,
         } = await useDeckSettingsForm(name, dbStructure);
 
         const {
             updateStructure,
             data,
             headers,
-            handleDeleteRow
+            handleDeleteRow,
+            tableDataForSave,
         } = useTable(deckStructureToTableStructure(structure), cards);
 
         structureWatcher((newValue) => {
@@ -106,7 +160,10 @@ export default {
             headers,
             step,
             handleDeleteRow,
-            setupedDeckName
+            setupedDeckName,
+            tableDataForSave,
+            isStructureSaved,
+            getRawStructure
         };
     },
 
@@ -114,12 +171,15 @@ export default {
 
     data() {
         return {
-            deckName: this.setupedDeckName,
-            isSaved: false,
+            isNameSaved: true,
+            isSaving: false,
         }
     },
 
     computed: {
+        isSaved() {
+            return this.isNameSaved && this.isStructureSaved && !this.tableDataForSave.length;
+        },
         preview() {
             return {
                 front: this.structure.front.map((item) => ({
@@ -139,6 +199,68 @@ export default {
 </script>
   
 <style lang="scss" scoped>
+@keyframes save-btn-appear {
+    from {
+        transform: scale(0.5);
+    }
+
+    33% {
+        visibility: visible;
+        opacity: 1;
+        transform: scale(1.25)
+    }
+
+    66% {
+        visibility: visible;
+        opacity: 1;
+        transform: scale(0.8)
+    }
+
+    to {
+        transform: scale(1.0)
+    }
+}
+
+@keyframes save-btn-active {
+
+
+    6% {
+        transform: scale(1.25) rotate(-30deg)
+    }
+
+    13% {
+        transform: scale(1.25) rotate(30deg)
+    }
+
+    19.999% {
+        transform: scale(1.0) rotate(0deg)
+    }
+
+    20% {
+        transform: scale(1.0) rotate(0deg)
+    }
+}
+
+@keyframes save-btn-process {
+
+
+    33% {
+        transform: scale(1.25) rotate(360deg)
+    }
+
+    66% {
+        transform: scale(1.25) rotate(720deg)
+    }
+
+    99.999% {
+        transform: scale(1.25) rotate(1080deg)
+    }
+
+    100% {
+        transform: scale(1.25) rotate(0deg)
+    }
+}
+
 .loading {
     font-size: 5em;
     font-weight: bold;
@@ -157,9 +279,25 @@ export default {
     text-align: center;
     justify-content: center;
     align-items: center;
+    visibility: hidden;
+    opacity: 0;
 
     .save-btn-icon {
         fill: white;
+    }
+
+    &.active {
+        animation: save-btn-appear 0.5s linear, save-btn-active ease-in-out 5s infinite 2s;
+        visibility: visible;
+        opacity: 1;
+    }
+
+    &.process {
+        visibility: visible;
+        opacity: 1;
+        animation: save-btn-process 1.5s ease-in-out infinite;
+        transition: transform 0.4s;
+        transform: scale(1.25)
     }
 }
 
