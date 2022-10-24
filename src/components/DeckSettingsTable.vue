@@ -6,7 +6,7 @@
       </th>
       <th class="settings"></th>
     </tr>
-    <tr class="table-row" v-for="(item, index) in data" :key="item.id">
+    <tr class="table-row" v-for="(item) in data" :key="item.id">
       <td @mousedown="handleClick" :style="{
         width: header.width + '%',
         whiteSpace: header.width > 20 ? 'normal' : 'nowrap',
@@ -16,7 +16,7 @@
       </td>
       <td class="settings">
         <div class="setting">
-          <b-icon-x class="pointer icon" @click="handleDeleteRow(index)" />
+          <b-icon-x class="pointer icon" @click="handleDeleteRow(item.id)" />
         </div>
       </td>
     </tr>

@@ -6,14 +6,16 @@ import {
 
 export default function useTable(rawStructure, rawData) {
   const tableDataForSave = ref([]);
+  const tableCardsForRemove = ref([]);
 
   const data = reactive({
     data: rawData.map((card) => {
       let obj = {};
-
+      obj.id = card.id;
       card.values.forEach((item) => {
         obj[item.field.name] = item;
       });
+
       return obj;
     }),
 
@@ -107,8 +109,11 @@ export default function useTable(rawStructure, rawData) {
     data.structure = newStructure;
   };
 
-  const handleDeleteRow = (id) => {
-    data.data = data.data.filter((row, index) => index !== id);
+  const handleDeleteRow = (cardId) => {
+    tableCardsForRemove.value.push(cardId);
+    data.data = data.data.filter((row) => {
+      return row.id !== cardId;
+    });
   };
 
   return {
@@ -117,5 +122,6 @@ export default function useTable(rawStructure, rawData) {
     updateStructure,
     handleDeleteRow,
     tableDataForSave,
+    tableCardsForRemove,
   };
 }

@@ -70,7 +70,6 @@ export default {
                     await axios.put(`/decks/update/${this.$route.params.deckSlug}/${this.setupedDeckName}/`)
                     this.isNameSaved = true
                 }
-
                 //Save fields
                 if (!this.isStructureSaved) {
                     const dbStructure = this.getRawStructure(this.structure)
@@ -78,16 +77,12 @@ export default {
                         this.isSaving = false;
                         return;
                     }
-
-
-
                     await axios.post(`/decks/update/fields/`, {
                         data: dbStructure,
                         deck_slug
                     })
                     this.isStructureSaved = true;
                 }
-
                 //Save values
                 if (this.tableDataForSave.length) {
                     await axios.post(`/decks/update/values/`, {
@@ -96,6 +91,16 @@ export default {
                     })
                     this.tableDataForSave = [];
                 }
+                //Remove cards
+                if (this.tableCardsForRemove.length) {
+                    await axios.post("/decks/update/remove-cards/", {
+                        data: this.tableCardsForRemove,
+                    })
+                    this.tableCardsForRemove = [];
+
+                }
+
+
             } catch (e) {
                 console.log(e);
             }
@@ -122,8 +127,6 @@ export default {
             }
         }));
 
-        console.log(dbStructure)
-
 
         const {
             setupedDeckName,
@@ -143,6 +146,7 @@ export default {
             headers,
             handleDeleteRow,
             tableDataForSave,
+            tableCardsForRemove
         } = useTable(deckStructureToTableStructure(structure), cards);
 
         structureWatcher((newValue) => {
@@ -163,7 +167,8 @@ export default {
             setupedDeckName,
             tableDataForSave,
             isStructureSaved,
-            getRawStructure
+            getRawStructure,
+            tableCardsForRemove
         };
     },
 
@@ -178,7 +183,10 @@ export default {
 
     computed: {
         isSaved() {
-            return this.isNameSaved && this.isStructureSaved && !this.tableDataForSave.length;
+            return this.isNameSaved
+                && this.isStructureSaved
+                && !this.tableDataForSave.length
+                && !this.tableCardsForRemove.length;
         },
         preview() {
             return {
