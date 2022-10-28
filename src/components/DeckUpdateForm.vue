@@ -53,8 +53,8 @@ export default {
         return side.map(item => ({ field_id: item.id, value: item.value }))
       }
 
-      const values = setRequestValue(this.deck.structure.front).concat(setRequestValue(this.deck.structure.back));
-
+      const values = [...setRequestValue(this.deck.structure.front), ...setRequestValue(this.deck.structure.back)];
+      console.log(values);
       const status = await this.addCardToDeck({ deck_id: this.deck.id, values }, this.$route.params.deckSlug);
       if (status) {
         this.clearForm();

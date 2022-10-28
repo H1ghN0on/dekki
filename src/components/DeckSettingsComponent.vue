@@ -111,6 +111,10 @@ export default {
 
     async setup() {
         const route = useRoute();
+        const deckSlug = route.params.deckSlug;
+
+
+
         const { getStructuredDeck, getRawStructure } = useDeck();
         const deckStructureToTableStructure = (deckStr) => {
             return deckStr.front.concat(deckStr.back).map((item) => ({
@@ -119,7 +123,7 @@ export default {
             }));
         }
 
-        const { name, dbStructure, cards } = await getStructuredDeck(route.params.deckSlug, (item) => ({
+        const { name, dbStructure, cards } = await getStructuredDeck(deckSlug, (item) => ({
             ...item,
             type: {
                 accessor: item.type,

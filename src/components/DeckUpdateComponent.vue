@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <DeckUpdateForm :deck="deck" :clearForm="clearDeck" class="part form" />
+        <DeckUpdateForm :deck="deck" :clearForm="clearForm" class="part form" />
         <DeckUpdatePreview :front="deck.structure.front" :back="deck.structure.back" class="part preview" />
     </div>
 </template>
@@ -30,13 +30,15 @@ export default {
 
 
         const deck = reactive({ structure: { ...dbStructure }, id });
-        const clearDeck = () => {
+        const clearForm = () => {
             deck.structure = {
                 front: deck.structure.front.map((item => ({ ...item, value: "" }))),
-                back: deck.structure.front.map((item => ({ ...item, value: "" }))),
+                back: deck.structure.back.map((item => ({ ...item, value: "" }))),
             }
+
+
         }
-        return { deck, clearDeck }
+        return { deck, clearForm }
     },
 };
 </script>
