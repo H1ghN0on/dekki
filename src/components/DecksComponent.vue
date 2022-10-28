@@ -1,10 +1,11 @@
 <template>
-    <deck-list :decks="decks" />
+    <deck-list :decks="decks" :onRemove="onRemove" />
 </template>
   
 <script>
 import DeckList from "@/components/DeckList.vue";
 import { useDeck } from "@/hooks";
+import { ref } from "vue"
 export default {
     name: "DecksPage",
     components: {
@@ -13,8 +14,15 @@ export default {
     async setup() {
         const { getMyDecks } = useDeck()
         const decks = await getMyDecks();
-        return { decks: decks ?? [] }
+        console.log(decks);
+        return { decks: ref(decks) ?? [] }
     },
+
+    methods: {
+        onRemove(slug) {
+            this.decks = this.decks.filter(deck => deck.slug !== slug);
+        }
+    }
 };
 </script>
   

@@ -64,34 +64,35 @@ export default {
         async saveDeck() {
             this.isSaving = true;
 
+
+            const dbStructure = this.getRawStructure(this.structure);
+
+            if (!this.setupedDeckName || !this.checkSameAndEmptyValues(dbStructure)) {
+                this.isSaving = false;
+                return;
+            }
+
             try {
                 //Create deck if not
                 if (!this.deckSlug) {
-                    await axios.get(`/decks/update/add-deck/${this.setupedDeckName}`)
-                        .then(res => { console.log(res); this.deckSlug = res.data })
+                    await axios.get(`/decks/add-new/${this.setupedDeckName}`)
+                        .then(res => { this.deckSlug = res.data })
                     this.isNameSaved = true
-                } else {
-                    //Save name 
-                    if (!this.isNameSaved && this.setupedDeckName) {
-                        await axios.put(`/decks/update/${this.deckSlug}/${this.setupedDeckName}/`)
-                        this.isNameSaved = true
-                    }
                 }
+                //Save name
+                else if (!this.isNameSaved) {
+                    await axios.put(`/decks/update/${this.deckSlug}/${this.setupedDeckName}/`)
+                        .then(res => { this.deckSlug = res.data })
+                    this.isNameSaved = true
+                }
+                this.$router.replace(`/settings/${this.deckSlug}`)
+
                 //Save fields
                 if (!this.isStructureSaved) {
-                    const dbStructure = this.getRawStructure(this.structure)
-
-                    if (!this.checkSameAndEmptyValues(dbStructure)) {
-                        this.isSaving = false;
-                        return;
-                    }
-
                     await axios.post(`/decks/update/fields/`, {
                         data: dbStructure,
                         deck_slug: this.deckSlug
                     })
-
-
                     this.isStructureSaved = true;
                 }
                 //Save values

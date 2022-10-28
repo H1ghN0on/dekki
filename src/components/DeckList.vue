@@ -9,7 +9,7 @@
       </div>
       <div v-if="decks.length" class="list">
         <div v-for="deck in decks" :key="deck.id">
-          <deck-list-item :deck="deck" />
+          <deck-list-item @remove="(slug) => onRemove(slug)" :deck="deck" />
         </div>
       </div>
 
@@ -39,6 +39,10 @@ export default {
       type: Array,
       required: true,
     },
+    onRemove: {
+      type: Function,
+      require: true,
+    }
   },
 };
 </script>

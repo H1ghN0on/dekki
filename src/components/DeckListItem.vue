@@ -3,7 +3,7 @@
     <div class="card">
       <div class="info">
         <div class="info-item name">{{ deck.name }}</div>
-        <div class="info-item cards-number">90 карточек</div>
+        <div class="info-item cards-number">Карточек: {{ deck.cards_number }}</div>
       </div>
       <base-button class="test-btn">Тест</base-button>
     </div>
@@ -14,7 +14,10 @@
       <router-link :to="'/settings/' + deck.slug">
         <b-icon-gear-fill class="card-settings-item settings pointer" />
       </router-link>
-      <b-icon-trash3-fill class="card-settings-item remove pointer" />
+      <b-icon-trash3-fill v-if="!isLoading" @click="onRemove" class="card-settings-item remove pointer" />
+      <base-loading v-else :width="35" :height="35" :borderWidth=2 :color="'red'"
+        class="card-settings-item remove loading" />
+
     </div>
   </div>
 </template>
@@ -22,6 +25,7 @@
 <script>
 
 import BaseButton from "@/components/BaseButton";
+import BaseLoading from "@/components/BaseLoading";
 import { BIconPlusCircleFill, BIconTrash3Fill, BIconGearFill } from "bootstrap-icons-vue";
 export default {
   components: {
@@ -29,13 +33,30 @@ export default {
     BIconTrash3Fill,
     BIconGearFill,
     BaseButton,
+    BaseLoading,
   },
   props: {
     deck: {
       type: Object,
       required: true,
     },
+
   },
+  data() {
+    return {
+      isLoading: false,
+    }
+  },
+
+
+  methods: {
+    async onRemove() {
+      this.isLoading = true;
+      await this.axios.delete(`/decks/remove/${this.deck.slug}`);
+      this.$emit('remove', this.deck.slug)
+      this.isLoading = false;
+    }
+  }
 
 
 
@@ -114,6 +135,12 @@ export default {
 
     &.remove {
       color: $danger-text;
+
+      &.loading {
+        position: relative;
+        bottom: 5px;
+        left: 5px;
+      }
     }
   }
 }
