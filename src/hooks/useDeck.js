@@ -3,6 +3,22 @@ import { useToast } from "vue-toastification";
 export default function useDeck() {
   const toast = useToast();
 
+  const parseRawDeck = (rawDeck, toMap) => {
+    const { id, name, fields, cards } = rawDeck;
+    const dbStructure = {
+      front: fields
+        .filter((item) => item.side === "front")
+        .sort((a, b) => a.position > b.position)
+        .map(toMap),
+      back: fields
+        .filter((item) => item.side === "back")
+        .sort((a, b) => a.position > b.position)
+        .map(toMap),
+    };
+
+    return { id, name, dbStructure, cards };
+  };
+
   const getRawStructure = (structure) => {
     return [
       ...structure.front.map((item, index) => ({
@@ -20,21 +36,37 @@ export default function useDeck() {
     ];
   };
 
+  const getDefaultDeck = (toMap) => {
+    const defaultDeck = {
+      id: -1,
+      name: "",
+      slug: "",
+      cards: [],
+      fields: [
+        {
+          fontSize: 24,
+          name: "",
+          position: 0,
+          side: "front",
+          type: "main",
+          id: -1,
+        },
+        {
+          fontSize: 24,
+          name: "",
+          position: 0,
+          side: "back",
+          type: "main",
+          id: -1,
+        },
+      ],
+    };
+    return parseRawDeck(defaultDeck, toMap);
+  };
+
   const getStructuredDeck = async (deckSlug, toMap) => {
     const data = await axios.get(`/decks/get/${deckSlug}`).then((res) => {
-      const { id, name, fields, cards } = res.data;
-      const dbStructure = {
-        front: fields
-          .filter((item) => item.side === "front")
-          .sort((a, b) => a.position > b.position)
-          .map(toMap),
-        back: fields
-          .filter((item) => item.side === "back")
-          .sort((a, b) => a.position > b.position)
-          .map(toMap),
-      };
-
-      return { id, name, dbStructure, cards };
+      return parseRawDeck(res.data, toMap);
     });
 
     return data;
@@ -75,5 +107,6 @@ export default function useDeck() {
     getMyDecks,
     addCardToDeck,
     getRawStructure,
+    getDefaultDeck,
   };
 }

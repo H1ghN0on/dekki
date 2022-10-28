@@ -62,32 +62,43 @@ export default {
         },
 
         async saveDeck() {
-            const deck_slug = this.$route.params.deckSlug;
             this.isSaving = true;
+
             try {
-                //Save name 
-                if (!this.isNameSaved && this.setupedDeckName) {
-                    await axios.put(`/decks/update/${this.$route.params.deckSlug}/${this.setupedDeckName}/`)
+                //Create deck if not
+                if (!this.deckSlug) {
+                    await axios.get(`/decks/update/add-deck/${this.setupedDeckName}`)
+                        .then(res => { console.log(res); this.deckSlug = res.data })
                     this.isNameSaved = true
+                } else {
+                    //Save name 
+                    if (!this.isNameSaved && this.setupedDeckName) {
+                        await axios.put(`/decks/update/${this.deckSlug}/${this.setupedDeckName}/`)
+                        this.isNameSaved = true
+                    }
                 }
                 //Save fields
                 if (!this.isStructureSaved) {
                     const dbStructure = this.getRawStructure(this.structure)
+
                     if (!this.checkSameAndEmptyValues(dbStructure)) {
                         this.isSaving = false;
                         return;
                     }
+
                     await axios.post(`/decks/update/fields/`, {
                         data: dbStructure,
-                        deck_slug
+                        deck_slug: this.deckSlug
                     })
+
+
                     this.isStructureSaved = true;
                 }
                 //Save values
                 if (this.tableDataForSave.length) {
                     await axios.post(`/decks/update/values/`, {
                         data: this.tableDataForSave,
-                        deck_slug
+                        deck_slug: this.deckSlug
                     })
                     this.tableDataForSave = [];
                 }
@@ -100,11 +111,11 @@ export default {
 
                 }
 
-
+                this.isSaving = false;
             } catch (e) {
                 console.log(e);
             }
-            this.isSaving = false;
+
         }
     },
 
@@ -115,7 +126,30 @@ export default {
 
 
 
-        const { getStructuredDeck, getRawStructure } = useDeck();
+        const { getStructuredDeck, getRawStructure, getDefaultDeck } = useDeck();
+
+
+        const getExistedOrDefaultDeck = async () => {
+            if (deckSlug) {
+                const data = await getStructuredDeck(deckSlug, (item) => ({
+                    ...item,
+                    type: {
+                        accessor: item.type,
+                        name: item.type === "main" ? "Больше" : "Меньше",
+                    }
+                }));
+                return data;
+
+            } else {
+                return getDefaultDeck((item) => ({
+                    ...item,
+                    type: {
+                        accessor: item.type,
+                        name: item.type === "main" ? "Больше" : "Меньше",
+                    }
+                }));
+            }
+        }
         const deckStructureToTableStructure = (deckStr) => {
             return deckStr.front.concat(deckStr.back).map((item) => ({
                 ...item,
@@ -123,14 +157,7 @@ export default {
             }));
         }
 
-        const { name, dbStructure, cards } = await getStructuredDeck(deckSlug, (item) => ({
-            ...item,
-            type: {
-                accessor: item.type,
-                name: item.type === "main" ? "Больше" : "Меньше",
-            }
-        }));
-
+        const { name, dbStructure, cards } = await getExistedOrDefaultDeck();
 
         const {
             setupedDeckName,
@@ -180,6 +207,7 @@ export default {
 
     data() {
         return {
+            deckSlug: this.$route.params.deckSlug,
             isNameSaved: true,
             isSaving: false,
         }

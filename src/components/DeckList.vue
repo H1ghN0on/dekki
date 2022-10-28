@@ -1,8 +1,11 @@
 <template>
   <div class="deck-list">
     <div v-if="decks.length">
+
       <div class="deck deck-add">
-        <span class="btn pointer">Добавить колоду</span>
+        <router-link to="/settings">
+          <span class="btn pointer">Добавить колоду</span>
+        </router-link>
       </div>
       <div v-if="decks.length" class="list">
         <div v-for="deck in decks" :key="deck.id">
@@ -13,7 +16,7 @@
     </div>
     <div v-else class="empty-list">
       <div class="warning">Нет колод</div>
-      <router-link to="/decks/settings">
+      <router-link to="/settings">
         <base-button class="create-btn">Создать</base-button>
       </router-link>
 
