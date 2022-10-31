@@ -1,9 +1,8 @@
 import { reactive, ref } from "vue";
-import axios from "axios";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
-
+import { Api } from "@/api";
 export default function useAuth() {
   const store = useStore();
   const router = useRouter();
@@ -65,19 +64,18 @@ export default function useAuth() {
     }
 
     if (!errors.registration.length) {
-      await axios
-        .post("/auth/users/", registrationFields)
-        .then(() => {
-          registrationFields.username = "";
-          registrationFields.email = "";
-          registrationFields.password = "";
-          onRegistrationSuccess();
-        })
-        .catch((err) => {
-          errors.registration = Object.values(err.response.data).map(
-            (error) => error[0]
-          );
-        });
+      const [error] = await Api().register(registrationFields);
+
+      if (error) {
+        errors.registration = Object.values(error.response.data).map(
+          (err) => err[0]
+        );
+      } else {
+        registrationFields.username = "";
+        registrationFields.email = "";
+        registrationFields.password = "";
+        onRegistrationSuccess();
+      }
     }
   };
 
@@ -90,25 +88,20 @@ export default function useAuth() {
       errors.login.push("Введите пароль");
     }
     if (!errors.login.length) {
-      await axios
-        .post("/auth/token/login/", loginFields)
-        .then((res) => {
-          loginFields.username = "";
-          loginFields.email = "";
-          loginFields.password = "";
+      const [error, data] = await Api().login(loginFields);
+      if (error) {
+        errors.login = Object.values(error.response.data).map((err) => err[0]);
+      } else {
+        loginFields.username = "";
+        loginFields.email = "";
+        loginFields.password = "";
 
-          if (res.data.auth_token) {
-            onLoginSuccess(res.data.auth_token);
-          } else {
-            errors.login.push("Неизвестная ошибка");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          errors.login = Object.values(err.response.data).map(
-            (error) => error[0]
-          );
-        });
+        if (data.auth_token) {
+          onLoginSuccess(data.auth_token);
+        } else {
+          errors.login.push("Ошибка случилась");
+        }
+      }
     }
   };
 

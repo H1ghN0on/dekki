@@ -36,7 +36,8 @@ import DeckSettingsTable from "@/components/DeckSettingsTable";
 import BaseSwitchableInput from "@/components/BaseSwitchableInput"
 import { useDeckSettingsForm, useTable, useDeck } from "@/hooks";
 import { useRoute } from "vue-router";
-import axios from "axios"
+import { useToast } from "vue-toastification";
+import { Api } from "@/api"
 
 export default {
     name: "DeckSettingsPage",
@@ -72,50 +73,71 @@ export default {
                 return;
             }
 
-            try {
-                //Create deck if not
-                if (!this.deckSlug) {
-                    await axios.get(`/decks/add-new/${this.setupedDeckName}`)
-                        .then(res => { this.deckSlug = res.data })
-                    this.isNameSaved = true
-                }
-                //Save name
-                else if (!this.isNameSaved) {
-                    await axios.put(`/decks/update/${this.deckSlug}/${this.setupedDeckName}/`)
-                        .then(res => { this.deckSlug = res.data })
-                    this.isNameSaved = true
-                }
-                this.$router.replace(`/settings/${this.deckSlug}`)
 
-                //Save fields
-                if (!this.isStructureSaved) {
-                    await axios.post(`/decks/update/fields/`, {
-                        data: dbStructure,
-                        deck_slug: this.deckSlug
-                    })
-                    this.isStructureSaved = true;
+            //Create deck if not
+            if (!this.deckSlug) {
+                const [error, data] = await Api().createDeck(this.setupedDeckName);
+                if (error) {
+                    this.toast.error(`Ошибка случилась : ${error}`, {
+                        timeout: 2000,
+                    });
+                    this.isSaving = false;
+                    return;
                 }
-                //Save values
-                if (this.tableDataForSave.length) {
-                    await axios.post(`/decks/update/values/`, {
-                        data: this.tableDataForSave,
-                        deck_slug: this.deckSlug
-                    })
-                    this.tableDataForSave = [];
-                }
-                //Remove cards
-                if (this.tableCardsForRemove.length) {
-                    await axios.post("/decks/update/remove-cards/", {
-                        data: this.tableCardsForRemove,
-                    })
-                    this.tableCardsForRemove = [];
-
-                }
-
-                this.isSaving = false;
-            } catch (e) {
-                console.log(e);
+                this.deckSlug = data;
+                this.isNameSaved = true
             }
+            //Save name
+            else if (!this.isNameSaved) {
+                const [error, data] = await Api().updateDeckName(this.setupedDeckName, this.deckSlug);
+                if (error) {
+                    this.toast.error(`Ошибка случилась : ${error}`, {
+                        timeout: 2000,
+                    });
+                    this.isSaving = false;
+                }
+                this.deckSlug = data;
+                this.isNameSaved = true
+            }
+            this.$router.replace(`/settings/${this.deckSlug}`)
+
+            //Save fields
+            if (!this.isStructureSaved) {
+                const [error] = await Api().updateDeckFields(dbStructure, this.deckSlug);
+                if (error) {
+                    this.toast.error(`Ошибка случилась : ${error}`, {
+                        timeout: 2000,
+                    });
+                    this.isSaving = false;
+                }
+                this.isStructureSaved = true;
+            }
+            //Save values
+            if (this.tableDataForSave.length) {
+                const [error] = await Api().updateDeckCards(this.tableDataForSave, this.deckSlug);
+                if (error) {
+                    this.toast.error(`Ошибка случилась : ${error}`, {
+                        timeout: 2000,
+                    });
+                    this.isSaving = false;
+                }
+                this.tableDataForSave = [];
+            }
+            //Remove cards
+            if (this.tableCardsForRemove.length) {
+                const [error] = await Api().removeCards(this.tableCardsForRemove);
+                if (error) {
+                    this.toast.error(`Ошибка случилась : ${error}`, {
+                        timeout: 2000,
+                    });
+                    this.isSaving = false;
+                }
+                this.tableCardsForRemove = [];
+
+            }
+
+            this.isSaving = false;
+
 
         }
     },
@@ -124,7 +146,7 @@ export default {
     async setup() {
         const route = useRoute();
         const deckSlug = route.params.deckSlug;
-
+        const toast = useToast();
 
 
         const { getStructuredDeck, getRawStructure, getDefaultDeck } = useDeck();
@@ -200,7 +222,8 @@ export default {
             tableDataForSave,
             isStructureSaved,
             getRawStructure,
-            tableCardsForRemove
+            tableCardsForRemove,
+            toast
         };
     },
 

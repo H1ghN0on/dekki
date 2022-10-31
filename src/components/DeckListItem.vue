@@ -27,6 +27,8 @@
 import BaseButton from "@/components/BaseButton";
 import BaseLoading from "@/components/BaseLoading";
 import { BIconPlusCircleFill, BIconTrash3Fill, BIconGearFill } from "bootstrap-icons-vue";
+import { useToast } from "vue-toastification";
+import { Api } from "@/api"
 export default {
   components: {
     BIconPlusCircleFill,
@@ -48,12 +50,24 @@ export default {
     }
   },
 
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
+
 
   methods: {
     async onRemove() {
       this.isLoading = true;
-      await this.axios.delete(`/decks/remove/${this.deck.slug}`);
-      this.$emit('remove', this.deck.slug)
+      const [e] = await Api().removeDeck(this.deck.slug);
+      if (e) {
+        this.toast.error(`Ошибка случилась`, {
+          timeout: 2000,
+        });
+
+      } else {
+        this.$emit('remove', this.deck.slug)
+      }
       this.isLoading = false;
     }
   }

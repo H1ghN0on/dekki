@@ -14,7 +14,7 @@ export default {
     async setup() {
         const { getMyDecks } = useDeck()
         const decks = await getMyDecks();
-        console.log(decks);
+
         return { decks: ref(decks) ?? [] }
     },
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { Api } from "@/api";
 import { useToast } from "vue-toastification";
 export default function useDeck() {
   const toast = useToast();
@@ -65,41 +65,47 @@ export default function useDeck() {
   };
 
   const getStructuredDeck = async (deckSlug, toMap) => {
-    const data = await axios.get(`/decks/get/${deckSlug}`).then((res) => {
-      return parseRawDeck(res.data, toMap);
-    });
+    const [error, data] = await Api().getDeck(deckSlug);
 
-    return data;
+    if (error) {
+      console.log(error);
+      toast.error("Ошибка случилась!", {
+        timeout: 2000,
+      });
+    }
+
+    return parseRawDeck(data, toMap);
   };
 
   const getMyDecks = async () => {
-    const data = await axios
-      .get("/decks/get-my/")
-      .then((res) => res.data)
-      .catch((err) => console.log(err));
+    const [error, data] = await Api().getMyDecks();
+    if (error) {
+      console.log(error);
+      toast.error("Ошибка случилась!", {
+        timeout: 2000,
+      });
+      return [];
+    }
     return data;
   };
 
   const addCardToDeck = async (data, deckSlug) => {
     if (!data.values.find((item) => item.value === "")) {
-      const status = await axios
-        .post(`/decks/add/`, { data, deck_slug: deckSlug })
-        .then(() => {
-          toast.success("Карточка добавлена!", {
-            timeout: 2000,
-          });
-          return true;
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Ошибка случилась!", {
-            timeout: 2000,
-          });
-          return false;
+      const [error, status] = await Api().addCardToDeck(data, deckSlug);
+
+      if (error || !status) {
+        console.log(error);
+        toast.error(`Ошибка случилась : ${error.message}`, {
+          timeout: 2000,
         });
-      return status;
+        return false;
+      }
+
+      toast.success("Карточка добавлена!", {
+        timeout: 2000,
+      });
+      return true;
     }
-    return false;
   };
 
   return {
