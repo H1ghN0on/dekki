@@ -1,9 +1,9 @@
 <template>
 
-    <testing-results />
+
 
     <div class="container">
-
+        <testing-results :active="isEndPhase" :correct="testing.correct" :wrong="testing.wrong" />
         <deck-update-preview :fixed-side="testing.current.side" :front="dbStructure.front" :back="dbStructure.back"
             class="preview" />
         <div class="testing" v-if="!testing.testCreationLoading">
@@ -16,7 +16,8 @@
             <span>Больше вопросов</span>
         </div>
 
-        <testing-tools class="tools" :correct="testing.correctNumber" :wrong="testing.wrongNumber" />
+        <testing-tools class="tools" @end="isEndPhase = true" :correct="testing.correct.length"
+            :wrong="testing.wrong.length" />
     </div>
 </template>
 
@@ -35,6 +36,10 @@ import { useRoute } from "vue-router"
 export default {
     components: {
         DeckUpdatePreview, TestingAnswerList, TestingTools, BaseProgressBar, BaseLoading, TestingResults,
+    },
+
+    data() {
+        return { isEndPhase: false, }
     },
 
     async setup() {
@@ -64,9 +69,6 @@ export default {
         return { testing, dbStructure, onAnswer, createTest };
     },
 
-    watch: {
-
-    }
 
 }
 </script>

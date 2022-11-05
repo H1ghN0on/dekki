@@ -5,8 +5,8 @@ import { watch } from "vue";
 export default function useTest(deckSlug) {
   const testing = reactive({
     questions: [],
-    correctNumber: 0,
-    wrongNumber: 0,
+    correct: [],
+    wrong: [],
     current: null,
     currentNumber: 0,
     timeForNextQuestion: 2500,
@@ -21,12 +21,12 @@ export default function useTest(deckSlug) {
     testing.currentNumber = 0;
   };
 
-  const onAnswer = async (value) => {
+  const onAnswer = (value) => {
     testing.current.answered = value;
     if (testing.current.correct_answer === value) {
-      testing.correctNumber++;
+      testing.correct.push(testing.current.card);
     } else {
-      testing.wrongNumber++;
+      testing.wrong.push(testing.current.card);
     }
     setTimeout(async () => {
       if (testing.questions.length !== testing.currentNumber + 1) {

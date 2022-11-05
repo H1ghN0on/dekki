@@ -1,7 +1,7 @@
 <template>
 
     <div class="tools">
-        <base-button class="end-btn">Завершить</base-button>
+        <base-button @click="$emit('end')" class="end-btn">Завершить</base-button>
         <div class="counter correct">
             <span class="counter-value">{{ correct }}</span>
         </div>

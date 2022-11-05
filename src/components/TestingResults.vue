@@ -1,19 +1,14 @@
 <template>
-    <base-dialog class="results" :show="true">
+    <base-dialog class="results" :show="active">
         <div class="title">Результаты</div>
         <div class="info">
-            <testing-results-item :progress="65" :name="'日本'" />
-            <testing-results-item :progress="33" :name="'日本'" />
-            <testing-results-item :progress="21" :name="'日本'" />
-            <testing-results-item :progress="85" :name="'日本'" />
-            <testing-results-item :progress="0" :name="'日本'" />
-            <testing-results-item :progress="32" :name="'日本'" />
-            <testing-results-item :progress="64" :name="'日本'" />
-            <testing-results-item :progress="49" :name="'日本'" />
-            <testing-results-item :progress="2" :name="'日本'" />
-            <testing-results-item :progress="76" :name="'日本'" />
+            <testing-results-item v-for="result in results" :key="result.id"
+                :progress="Math.floor(result.correct / result.count * 100)" :name="result.values[0].value" />
         </div>
-        <base-button class="btn">Продолжить</base-button>
+        <router-link to="/decks">
+            <base-button class="btn">Продолжить</base-button>
+        </router-link>
+
     </base-dialog>
 </template>
 
@@ -27,6 +22,52 @@ import TestingResultsItem from "@/components/TestingResultsItem";
 
 export default {
     components: { BaseDialog, BaseButton, TestingResultsItem },
+
+    props: {
+        active: { type: Boolean, required: true },
+        correct: { type: Array, required: true, },
+        wrong: { type: Array, required: true, }
+    },
+
+    data() {
+        return {
+            results: [],
+        }
+    },
+
+
+    watch: {
+        correct: {
+            deep: true,
+            handler(newValue) {
+                const newItem = newValue[newValue.length - 1];
+                const id = this.results.findIndex(item => item.id === newItem.id);
+                if (id !== -1) {
+                    this.results[id].count++;
+                    this.results[id].correct++;
+                } else {
+                    this.results.push({ ...newItem, count: 1, correct: 1, wrong: 0 });
+
+                }
+            }
+        },
+        wrong: {
+            deep: true,
+            handler(newValue) {
+                const newItem = newValue[newValue.length - 1];
+                const id = this.results.findIndex(item => item.id === newItem.id);
+                if (id !== -1) {
+                    this.results[id].count++;
+                    this.results[id].wrong++;
+                } else {
+                    this.results.push({ ...newItem, count: 1, wrong: 1, correct: 0 });
+
+                }
+            },
+        }
+
+
+    }
 }
 
 
