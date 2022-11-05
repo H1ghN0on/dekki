@@ -1,5 +1,7 @@
 <template>
 
+    <testing-results />
+
     <div class="container">
 
         <deck-update-preview :fixed-side="testing.current.side" :front="dbStructure.front" :back="dbStructure.back"
@@ -26,12 +28,13 @@ import DeckUpdatePreview from "@/components/DeckUpdatePreview"
 import TestingAnswerList from "@/components/TestingAnswerList"
 import BaseProgressBar from "@/components/BaseProgressBar"
 import BaseLoading from "@/components/BaseLoading";
+import TestingResults from "@/components/TestingResults";
 import { useTest, useDeck } from "@/hooks"
 import { useRoute } from "vue-router"
 
 export default {
     components: {
-        DeckUpdatePreview, TestingAnswerList, TestingTools, BaseProgressBar, BaseLoading
+        DeckUpdatePreview, TestingAnswerList, TestingTools, BaseProgressBar, BaseLoading, TestingResults,
     },
 
     async setup() {
