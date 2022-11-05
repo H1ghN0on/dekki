@@ -12,7 +12,7 @@
         whiteSpace: header.width > 20 ? 'normal' : 'nowrap',
       }" v-for="header in computedHeaders" :key="header.id">
         <base-switchable-input v-model="item[header.accessor].value"
-          @update:modelValue="addToSave(item[header.accessor])" :placeholder="'Пусто'" />
+          @update:modelValue="addToSave(item[header.accessor], item.id)" :placeholder="'Пусто'" />
       </td>
       <td class="settings">
         <div class="setting">
@@ -66,9 +66,12 @@ export default {
   },
 
   methods: {
-    addToSave(item) {
+    addToSave(item, cardId) {
       const arr = this.localModelValue.filter(obj => obj.id !== item.id)
-      arr.push(item)
+      arr.push({
+        ...item,
+        cardId,
+      })
       this.localModelValue = arr
     }
   },

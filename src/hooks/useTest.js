@@ -9,7 +9,8 @@ export default function useTest(deckSlug) {
     wrongNumber: 0,
     current: null,
     currentNumber: 0,
-    timeForNextQuestion: 3500,
+    timeForNextQuestion: 2500,
+    testCreationLoading: false,
   });
 
   const createTest = async () => {
@@ -17,20 +18,26 @@ export default function useTest(deckSlug) {
     testing.questions = data;
     testing.current = data[testing.currentNumber];
     testing.current.isAnswered = "";
+    testing.currentNumber = 0;
   };
 
-  const onAnswer = (value) => {
-    setTimeout(() => {
-      testing.current = testing.questions[++testing.currentNumber];
-      testing.current.answered = "";
-    }, testing.timeForNextQuestion);
-
+  const onAnswer = async (value) => {
     testing.current.answered = value;
     if (testing.current.correct_answer === value) {
       testing.correctNumber++;
     } else {
       testing.wrongNumber++;
     }
+    setTimeout(async () => {
+      if (testing.questions.length !== testing.currentNumber + 1) {
+        testing.current = testing.questions[++testing.currentNumber];
+        testing.current.answered = "";
+      } else {
+        testing.testCreationLoading = true;
+        await createTest();
+        testing.testCreationLoading = false;
+      }
+    }, testing.timeForNextQuestion);
   };
 
   const testingWatcher = (watcher) => {

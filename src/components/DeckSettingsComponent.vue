@@ -68,8 +68,18 @@ export default {
 
 
             const dbStructure = this.getRawStructure(this.structure);
+            if (!this.setupedDeckName) {
+                this.toast.error(`Нет названия колоды`, {
+                    timeout: 2000,
+                });
+                this.isSaving = false;
+                return;
+            }
 
-            if (!this.setupedDeckName || !this.checkSameAndEmptyValues(dbStructure)) {
+            if (!this.checkSameAndEmptyValues(dbStructure)) {
+                this.toast.error(`Пустые названия в структуре колоды `, {
+                    timeout: 2000,
+                });
                 this.isSaving = false;
                 return;
             }
@@ -115,6 +125,30 @@ export default {
             }
             //Save values
             if (this.tableDataForSave.length) {
+                let notGood = false;
+                //empty values for every field in one side is not good
+                this.tableDataForSave.forEach(item => {
+                    const card = this.data.data.find(card => item.cardId === card.id);
+                    if (card) {
+                        const values = Object.values(card);
+                        values.shift();
+                        const frontSide = values.filter(value => value.field.side === "front")
+                        const backSide = values.filter(value => value.field.side === "back")
+
+                        if (!frontSide.find(value => value.value) || !backSide.find(value => value.value)) {
+                            notGood = true;
+                        }
+
+                    }
+                })
+
+                if (notGood) {
+                    this.toast.error(`Одна из карт содержит пустые поля с одной из сторон `, {
+                        timeout: 2000,
+                    });
+                    this.isSaving = false;
+                    return;
+                }
                 const [error] = await Api().updateDeckCards(this.tableDataForSave, this.deckSlug);
                 if (error) {
                     this.toast.error(`Ошибка случилась : ${error}`, {

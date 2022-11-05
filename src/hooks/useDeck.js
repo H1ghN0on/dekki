@@ -107,6 +107,11 @@ export default function useDeck() {
         timeout: 2000,
       });
       return true;
+    } else {
+      toast.error(`Не все поля заполнены`, {
+        timeout: 2000,
+      });
+      return false;
     }
   };
 

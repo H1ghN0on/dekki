@@ -4,10 +4,14 @@
 
         <deck-update-preview :fixed-side="testing.current.side" :front="dbStructure.front" :back="dbStructure.back"
             class="preview" />
-        <div class="testing">
+        <div class="testing" v-if="!testing.testCreationLoading">
             <base-progress-bar class="progress-bar" :class="{ 'active': testing.current.answered }"
                 :for-watch="testing.current.answered" :fill-time="testing.timeForNextQuestion - 500" :delayTime=".4" />
             <testing-answer-list @answer="onAnswer" class="answers" :current="testing.current" />
+        </div>
+        <div class="loading" v-else>
+            <base-loading />
+            <span>Больше вопросов</span>
         </div>
 
         <testing-tools class="tools" :correct="testing.correctNumber" :wrong="testing.wrongNumber" />
@@ -21,12 +25,13 @@ import TestingTools from "@/components/TestingTools"
 import DeckUpdatePreview from "@/components/DeckUpdatePreview"
 import TestingAnswerList from "@/components/TestingAnswerList"
 import BaseProgressBar from "@/components/BaseProgressBar"
+import BaseLoading from "@/components/BaseLoading";
 import { useTest, useDeck } from "@/hooks"
 import { useRoute } from "vue-router"
 
 export default {
     components: {
-        DeckUpdatePreview, TestingAnswerList, TestingTools, BaseProgressBar
+        DeckUpdatePreview, TestingAnswerList, TestingTools, BaseProgressBar, BaseLoading
     },
 
     async setup() {
@@ -53,11 +58,12 @@ export default {
             dbStructure.back = dbStructure.back.map(updateCardPreview);
         })
 
-        return { testing, dbStructure, onAnswer };
+        return { testing, dbStructure, onAnswer, createTest };
     },
 
+    watch: {
 
-
+    }
 
 }
 </script>
@@ -108,6 +114,10 @@ export default {
         width: 35vw;
         margin-left: 30px;
 
+    }
+
+    .loading {
+        width: 65vw;
     }
 
     .testing {
