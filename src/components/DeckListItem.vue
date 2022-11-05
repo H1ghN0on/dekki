@@ -5,7 +5,17 @@
         <div class="info-item name">{{ deck.name }}</div>
         <div class="info-item cards-number">Карточек: {{ deck.cards_number }}</div>
       </div>
-      <base-button class="test-btn">Тест</base-button>
+      <div class="test-btn">
+        <router-link :to="'/testing/' + deck.slug">
+          <base-button class="btn">
+            Тест
+          </base-button>
+        </router-link>
+      </div>
+
+
+
+
     </div>
     <div class="card-settings">
       <router-link :to="'/update/' + deck.slug">
@@ -116,8 +126,12 @@ export default {
 
   .test-btn {
     margin-top: 50px;
-    font-size: 1em;
-    padding: 10px;
+
+    .btn {
+      width: 100%;
+      font-size: 1em;
+      padding: 10px;
+    }
   }
 
 }

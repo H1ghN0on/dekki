@@ -8,13 +8,15 @@ export default function useDeck() {
     const dbStructure = {
       front: fields
         .filter((item) => item.side === "front")
-        .sort((a, b) => a.position > b.position)
-        .map(toMap),
+        .sort((a, b) => a.position > b.position),
       back: fields
         .filter((item) => item.side === "back")
-        .sort((a, b) => a.position > b.position)
-        .map(toMap),
+        .sort((a, b) => a.position > b.position),
     };
+    if (toMap) {
+      dbStructure.front = dbStructure.front.map(toMap);
+      dbStructure.back = dbStructure.back.map(toMap);
+    }
 
     return { id, name, dbStructure, cards };
   };

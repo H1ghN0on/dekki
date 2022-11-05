@@ -54,7 +54,7 @@ export default {
       }
 
       const values = [...setRequestValue(this.deck.structure.front), ...setRequestValue(this.deck.structure.back)];
-      console.log(values);
+
       const status = await this.addCardToDeck({ deck_id: this.deck.id, values }, this.$route.params.deckSlug);
       if (status) {
         this.clearForm();

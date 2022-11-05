@@ -1,29 +1,30 @@
 <template>
 
-    <div>
+    <div class="container">
         <div @click="saveDeck" :class="{'active': !isSaved && !isSaving, 'process': isSaving}" class="save-btn pointer">
             <BIconFileEarmarkFill class="save-btn-icon" />
         </div>
-        <div class="container">
-            <div class="deck-name-container">
-                <div class="deck-name">
-                    <base-switchable-input v-model="setupedDeckName" @update:modelValue="isNameSaved = false"
-                        :placeholder="'Пусто'" />
-                </div>
 
+        <div class="deck-name-container">
+            <div class="deck-name">
+                <base-switchable-input v-model="setupedDeckName" @update:modelValue="isNameSaved = false"
+                    :placeholder="'Пусто'" />
             </div>
-            <div class="form-container">
-                <DeckSettingsForm :step="step" :handleAddToFront="handleAddToFront" :handleAddToBack="handleAddToBack"
-                    :handleDeleteFromFront="handleDeleteFromFront" :handleDeleteFromBack="handleDeleteFromBack"
-                    v-model="structure" class="form" />
-                <DeckUpdatePreview :front="preview.front" :back="preview.back" class="preview" />
-            </div>
-            <div class="table-container">
-                <DeckSettingsTable v-model="tableDataForSave" :handleDeleteRow="handleDeleteRow" :headers="headers"
-                    :data="data.data" />
-            </div>
+
+        </div>
+        <div class="form-container">
+            <DeckSettingsForm :step="step" :handleAddToFront="handleAddToFront" :handleAddToBack="handleAddToBack"
+                :handleDeleteFromFront="handleDeleteFromFront" :handleDeleteFromBack="handleDeleteFromBack"
+                v-model="structure" class="form" />
+            <DeckUpdatePreview :front="preview.front" :back="preview.back" class="preview" />
+        </div>
+        <div class="table-container">
+            <DeckSettingsTable v-model="tableDataForSave" :handleDeleteRow="handleDeleteRow" :headers="headers"
+                :data="data.data" />
         </div>
     </div>
+
+
 
 
 </template>

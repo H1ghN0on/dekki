@@ -1,4 +1,10 @@
-import { DeckSettingsPage, DecksPage, DeckUpdatePage, AuthPage } from "@/pages";
+import {
+  DeckSettingsPage,
+  DecksPage,
+  DeckUpdatePage,
+  AuthPage,
+  TestingPage,
+} from "@/pages";
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuth } from "@/hooks";
 import store from "@/store";
@@ -52,6 +58,17 @@ const routes = [
     path: "/auth",
     component: AuthPage,
     beforeEnter: ifNotAuthenticated,
+  },
+
+  {
+    path: "/testing/:deckSlug",
+    component: TestingPage,
+    beforeEnter: isAuthenticated,
+  },
+
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/auth",
   },
 ];
 

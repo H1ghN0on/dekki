@@ -1,20 +1,20 @@
 <template>
   <div class="preview">
-    <div class="card" :class="{ flipped: !isFront }">
+    <div class="card" :class="{ flipped: side === 'back', 'fixed-side': fixedSide }">
       <div class="front">
         <div v-for="item in front" :key="item.id" :class="'attr ' + item.type"
-          :style="{'font-size': item.fontSize + 'px',}">
+          :style="{ 'font-size': item.fontSize + 'px', }">
           {{ item.value }}
         </div>
       </div>
       <div class="back">
         <div v-for="item in back" :key="item.id" :class="'attr ' + item.type"
-          :style="{'font-size': item.fontSize + 'px'}">
+          :style="{ 'font-size': item.fontSize + 'px' }">
           {{ item.value }}
         </div>
       </div>
     </div>
-    <div @click="flipCard" class="flip-btn">Перевернуть</div>
+    <div v-if="!fixedSide" @click="flipCard" class="flip-btn">Перевернуть</div>
   </div>
 </template>
 
@@ -30,20 +30,29 @@ export default {
       type: Array,
       required: true,
     },
+    fixedSide: String
   },
 
   methods: {
     flipCard() {
-      this.isFront = !this.isFront;
+      this.side = this.side === "front" ? "back" : "front";
     },
   },
 
 
   data() {
     return {
-      isFront: true,
-    };
+      side: this.fixedSide || "front",
+    }
   },
+
+  watch: {
+    fixedSide(newValue) {
+      this.side = newValue ? newValue : "front";
+    }
+  }
+
+
 };
 </script>
 
@@ -70,6 +79,9 @@ export default {
     background: white;
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
 
+    &.fixed-side {
+      transition: 0s;
+    }
 
     &.flipped {
       transform: rotateY(180deg);

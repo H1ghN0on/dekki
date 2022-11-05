@@ -22,6 +22,7 @@ export default {
 
 <style lang="scss" scoped>
 button {
+  position: relative;
   background: $button-primary;
   color: $button-text;
   border: none;

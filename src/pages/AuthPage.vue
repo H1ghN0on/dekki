@@ -1,14 +1,14 @@
 <template>
     <the-header />
     <div class="container">
-        <div class="auth-container" :class="{'active': isRegister}">
+        <div class="auth-container" :class="{ 'active': isRegister }">
             <div class="card login">
                 <div class="title">
                     Вход
                 </div>
                 <form class="form">
                     <div class="errors" v-if="errors.login.length">
-                        <div class="error" v-for="error, index of errors.login" :key="index">{{error}}</div>
+                        <div class="error" v-for="error, index of errors.login" :key="index">{{ error }}</div>
                     </div>
                     <div class="input-box">
                         <base-input class="input" v-model="loginFields.username" :label="'Имя пользователя'" />
@@ -33,7 +33,7 @@
 
                 <form class="form">
                     <div class="errors" v-if="errors.registration.length">
-                        <div class="error" v-for="error, index of errors.registration" :key="index">{{error}}</div>
+                        <div class="error" v-for="error, index of errors.registration" :key="index">{{ error }}</div>
                     </div>
 
                     <div class="input-box">
