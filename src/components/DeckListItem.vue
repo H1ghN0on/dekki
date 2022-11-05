@@ -7,9 +7,8 @@
       </div>
       <div class="test-btn">
         <router-link :to="'/testing/' + deck.slug">
-          <base-button class="btn">
-            Тест
-          </base-button>
+          <base-button class="btn" :disabled="deck.cards_number < 4">
+            {{ deck.cards_number < 4 ? "Минимум 4 карты для теста" : "Тест" }} </base-button>
         </router-link>
       </div>
 
