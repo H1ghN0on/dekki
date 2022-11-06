@@ -13,6 +13,8 @@ app.get(/.*/, function (req, res) {
   res.sendFile(path.join(__dirname, "/dist/index.html"));
 });
 
+console.log(path.join(__dirname, "../dist/index.html"));
+
 //heroku automatically assigns port so leave it to do it's
 //work, don't set a port in the heroku dashboard. while the
 //5000 or whatever number you set will be for your local
