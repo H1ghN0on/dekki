@@ -13,6 +13,7 @@
     "bootstrap-icons-vue": "^1.8.1",
     "bulma-toast": "^2.4.1",
     "core-js": "^3.8.3",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "js-cookie": "^3.0.1",
     "sass": "^1.54.4",
