@@ -1,5 +1,6 @@
 <template>
-    <base-dialog class="results" :show="active">
+    <base-dialog class="results" :show="active"
+        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
         <div class="title">Результаты</div>
         <div class="info">
             <testing-results-item v-for="result in results" :key="result.id"
@@ -79,6 +80,11 @@ export default {
     flex-direction: column;
     align-items: center;
 
+    ::v-deep {
+        .dialog__content {
+            width: 60vw;
+        }
+    }
 
     .title {
         text-align: center;
@@ -116,5 +122,14 @@ export default {
         margin: 0 auto;
         margin-top: 20px;
     }
+
+    &.md {
+        ::v-deep {
+            .dialog__content {
+                width: 90vw;
+            }
+        }
+    }
+
 }
 </style>

@@ -50,9 +50,8 @@ export default {
 
     .progress {
         margin-top: 10px;
-        width: 600px;
+        width: 100%;
         display: flex;
-
 
         .bar-part {
             color: white;

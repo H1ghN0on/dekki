@@ -2,7 +2,8 @@
 
 
 
-    <div class="container">
+    <div class="container"
+        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
         <testing-results :active="isEndPhase" :correct="testing.correct" :wrong="testing.wrong" />
         <deck-update-preview :fixed-side="testing.current.side" :front="dbStructure.front" :back="dbStructure.back"
             class="preview" />
@@ -151,9 +152,61 @@ export default {
         position: absolute;
         bottom: 40px;
         right: 40px;
+        z-index: 10000;
     }
 
+    &.lg {
 
+        .preview {
+            width: 55vw;
+        }
+
+        .testing {
+            width: 45vw;
+        }
+    }
+
+    &.md {
+        flex-direction: column;
+        padding-top: 0;
+
+        .preview {
+            width: 60vw;
+            order: 1;
+            margin-left: 0;
+        }
+
+        .testing {
+
+            order: 2;
+            width: 100vw;
+
+            .progress-bar {
+                position: absolute;
+                bottom: 10px;
+                left: 50%;
+                transform: translate(-50%, 0);
+            }
+
+        }
+
+        .tools {
+            position: static;
+            padding: 20px 0;
+        }
+    }
+
+    &.sm {
+
+
+        .preview {
+            width: 80vw;
+
+        }
+
+
+
+    }
 }
 </style>
 

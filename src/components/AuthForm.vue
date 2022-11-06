@@ -213,24 +213,9 @@ export default {
             }
         }
 
+
+
         &.sm {
-            .title {
-                font-size: 1.5em;
-            }
-
-            .form {
-                margin-top: 30px;
-
-                .submit-btn-box {
-                    .submit-btn {
-                        font-size: 1em;
-                        padding: 15px 35px;
-                    }
-                }
-            }
-        }
-
-        &.xs {
             padding: 20px !important;
 
             .login-btn {

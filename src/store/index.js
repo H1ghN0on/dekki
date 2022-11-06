@@ -27,7 +27,7 @@ export default createStore({
   getters: {
     isAuthenticated: (state) => !!state.token,
 
-    xsScreen: (state) => state.width < 576,
+    smScreen: (state) => state.width < 576,
 
     mdScreen: (state) => state.width < 768,
 

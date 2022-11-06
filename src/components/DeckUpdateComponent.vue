@@ -1,5 +1,6 @@
 <template>
-    <div class="container">
+    <div class="container"
+        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
         <DeckUpdateForm :deck="deck" :clearForm="clearForm" class="part form" />
         <DeckUpdatePreview :front="deck.structure.front" :back="deck.structure.back" class="part preview" />
     </div>
@@ -58,6 +59,40 @@ export default {
     .preview {
         width: 35vw;
         margin-right: 30px;
+    }
+
+    &.lg {
+        .form {
+            width: 45vw;
+        }
+    }
+
+    &.md {
+        .form {
+            width: 50vw;
+        }
+
+        .preview {
+            width: 45vw;
+            margin-right: 0;
+        }
+    }
+
+    &.sm {
+        padding-top: 10px;
+
+        padding-bottom: 40px;
+        flex-direction: column;
+
+        .form {
+            width: 90vw;
+
+        }
+
+        .preview {
+            margin-top: 30px;
+            width: 90vw;
+        }
     }
 }
 </style>

@@ -33,7 +33,7 @@ export default {
     left: 0;
     background: rgba(0, 0, 0, 0.5);
     position: fixed;
-    z-index: 1000;
+    z-index: 10001;
     display: flex;
 
 }
@@ -47,5 +47,6 @@ export default {
     border-radius: 10px;
     padding: 20px;
     overflow: hidden;
+    max-width: 90vw;
 }
 </style>

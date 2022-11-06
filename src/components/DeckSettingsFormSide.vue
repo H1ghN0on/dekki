@@ -1,10 +1,11 @@
 <template>
-  <div class="list">
-    <div class="list__item">Название</div>
-    <div class="list__item">Тип</div>
-    <div class="list__item">Шрифт</div>
-  </div>
+
   <div class="input-container">
+    <div class="list">
+      <div class="list__item">Название</div>
+      <div class="list__item">Тип</div>
+      <div class="list__item">Шрифт</div>
+    </div>
     <deck-settings-form-field class="input-box" v-for="(item, index) in localModelValue" :key="item.id"
       v-model="localModelValue[index]" :onDelete="deleteField.bind(index)" :step="step" />
   </div>
@@ -41,8 +42,8 @@ export default {
 <style lang="scss" scoped>
 .list {
   display: grid;
-
-  grid-template-columns: 50% 25% 20%;
+  width: 100%;
+  grid-template-columns: 50% 25% 20% 5%;
   grid-gap: 5px;
 
   .list__item {

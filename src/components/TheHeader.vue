@@ -1,5 +1,6 @@
 <template>
-  <header>
+  <header
+    :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
     <div class="logo">
       <router-link to="/decks">正午</router-link>
     </div>
@@ -55,5 +56,13 @@ header {
     padding: 10px 25px;
   }
 
+  &.sm {
+    justify-content: space-between;
+    padding: 10px 30px;
+
+    nav {
+      position: static;
+    }
+  }
 }
 </style>

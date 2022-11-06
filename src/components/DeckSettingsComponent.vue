@@ -1,7 +1,9 @@
 <template>
 
-    <div class="container">
-        <div @click="saveDeck" :class="{'active': !isSaved && !isSaving, 'process': isSaving}" class="save-btn pointer">
+    <div class="container"
+        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
+        <div @click="saveDeck" :class="{ 'active': !isSaved && !isSaving, 'process': isSaving }"
+            class="save-btn pointer">
             <BIconFileEarmarkFill class="save-btn-icon" />
         </div>
 
@@ -446,6 +448,40 @@ export default {
     .table-container {
         width: 90%;
         margin-top: 100px;
+    }
+
+    &.lg {
+        .form-container {
+            .form {
+                width: 55vw;
+            }
+
+            .preview {
+
+                margin-right: 0;
+            }
+        }
+    }
+
+    &.md {
+        .form-container {
+            flex-direction: column;
+
+            .form {
+                width: 90vw;
+                min-height: 100%;
+                height: auto;
+            }
+
+            .preview {
+                display: none;
+            }
+        }
+
+        .save-btn {
+            bottom: 20px;
+            right: 20px;
+        }
     }
 }
 </style>
