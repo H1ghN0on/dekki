@@ -1,7 +1,6 @@
 <template>
 
-    <div class="container"
-        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
+    <div class="container" :class="breakpoints">
         <div @click="saveDeck" :class="{ 'active': !isSaved && !isSaving, 'process': isSaving }"
             class="save-btn pointer">
             <BIconFileEarmarkFill class="save-btn-icon" />
@@ -41,6 +40,7 @@ import { useDeckSettingsForm, useTable, useDeck } from "@/hooks";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 import { Api } from "@/api"
+import { breakpointsMixin } from "@/mixins";
 
 export default {
     name: "DeckSettingsPage",
@@ -51,6 +51,8 @@ export default {
         BaseSwitchableInput,
         BIconFileEarmarkFill
     },
+
+    mixins: [breakpointsMixin],
 
     methods: {
         checkSameAndEmptyValues(array) {

@@ -1,6 +1,5 @@
 <template>
-    <div class="container"
-        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
+    <div class="container" :class="breakpoints">
         <DeckUpdateForm :deck="deck" :clearForm="clearForm" class="part form" />
         <DeckUpdatePreview :front="deck.structure.front" :back="deck.structure.back" class="part preview" />
     </div>
@@ -13,8 +12,10 @@ import DeckUpdatePreview from "@/components/DeckUpdatePreview";
 import { reactive } from "vue";
 import { useRoute } from "vue-router"
 import { useDeck } from "@/hooks"
+import { breakpointsMixin } from "@/mixins";
 export default {
     name: "DeckUpdatePage",
+    mixins: [breakpointsMixin],
     components: {
 
         DeckUpdateForm,

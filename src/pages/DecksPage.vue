@@ -3,8 +3,7 @@
     <the-header />
     <Suspense>
       <template #default>
-        <decks-component class="deck-list"
-          :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }" />
+        <decks-component class="deck-list" :class="breakpoints" />
       </template>
       <template #fallback>
         <div class="loading">
@@ -19,7 +18,7 @@
 import TheHeader from "@/components/TheHeader.vue";
 import BaseLoading from "@/components/BaseLoading";
 import DecksComponent from "@/components/DecksComponent";
-
+import { breakpointsMixin } from "@/mixins";
 export default {
   name: "DecksPage",
   components: {
@@ -27,6 +26,8 @@ export default {
     DecksComponent,
     BaseLoading
   },
+
+  mixins: [breakpointsMixin]
 
 };
 </script>

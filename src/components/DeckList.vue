@@ -1,7 +1,6 @@
 <template>
 
-  <div class="deck-list"
-    :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
+  <div class="deck-list" :class="breakpoints">
     <div v-if="decks.length">
 
       <div class="deck deck-add">
@@ -30,11 +29,14 @@
 <script>
 import DeckListItem from "@/components/DeckListItem.vue";
 import BaseButton from "@/components/BaseButton.vue";
+import { breakpointsMixin } from "@/mixins";
 export default {
   components: {
     BaseButton,
     DeckListItem,
   },
+
+  mixins: [breakpointsMixin],
 
   props: {
     decks: {

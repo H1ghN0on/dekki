@@ -1,6 +1,5 @@
 <template>
-    <div class="card register"
-        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
+    <div class="card register" :class="breakpoints">
         <div @click="$emit('toggleAuth')" class="login-btn pointer"></div>
         <div class="title">
             <span>Регистрация</span>
@@ -35,11 +34,12 @@
 <script>
 import BaseButton from "@/components/BaseButton"
 import BaseInput from "@/components/BaseInput"
-import { localModelValueMixin } from "@/mixins";
+import { localModelValueMixin, breakpointsMixin } from "@/mixins";
 
 
 export default {
     components: { BaseButton, BaseInput },
+
     props: {
         errors: {
             type: Object, required: true
@@ -49,7 +49,7 @@ export default {
         }
     },
 
-    mixins: [localModelValueMixin]
+    mixins: [localModelValueMixin, breakpointsMixin]
 }
 
 </script>

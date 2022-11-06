@@ -1,9 +1,5 @@
 <template>
-
-
-
-    <div class="container"
-        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
+    <div class="container" :class="breakpoints">
         <testing-results :active="isEndPhase" :correct="testing.correct" :wrong="testing.wrong" />
         <deck-update-preview :fixed-side="testing.current.side" :front="dbStructure.front" :back="dbStructure.back"
             class="preview" />
@@ -33,8 +29,10 @@ import BaseLoading from "@/components/BaseLoading";
 import TestingResults from "@/components/TestingResults";
 import { useTest, useDeck } from "@/hooks"
 import { useRoute } from "vue-router"
+import { breakpointsMixin } from "@/mixins";
 
 export default {
+    mixins: [breakpointsMixin],
     components: {
         DeckUpdatePreview, TestingAnswerList, TestingTools, BaseProgressBar, BaseLoading, TestingResults,
     },

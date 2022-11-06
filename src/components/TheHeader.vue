@@ -1,6 +1,5 @@
 <template>
-  <header
-    :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
+  <header :class="breakpoints">
     <div class="logo">
       <router-link to="/decks">正午</router-link>
     </div>
@@ -16,7 +15,9 @@
 <script>
 import BaseButton from "@/components/BaseButton";
 import { useAuth } from "@/hooks";
+import { breakpointsMixin } from "@/mixins";
 export default {
+  mixins: [breakpointsMixin],
   components: {
     BaseButton,
   },
@@ -32,6 +33,7 @@ export default {
 
 <style lang="scss" scoped>
 header {
+
   display: flex;
   justify-content: center;
   position: relative;

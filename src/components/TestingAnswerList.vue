@@ -1,7 +1,6 @@
 <template>
 
-    <div class="answers"
-        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
+    <div class="answers" :class="breakpoints">
         <testing-answer v-for="(answer, index) in current.answers" @answer="(value) => $emit('answer', value)"
             :key="index" :value="answer" :correct="!!current.answered && current.correct_answer === answer"
             :wrong="!!current.answered && current.answered === answer" :disabled="!!current.answered" />
@@ -12,10 +11,11 @@
 
 <script>
 import TestingAnswer from "@/components/TestingAnswer";
+import { breakpointsMixin } from "@/mixins";
 
 export default {
     components: { TestingAnswer },
-
+    mixins: [breakpointsMixin],
     props: {
         current: {
             type: Object,

@@ -1,6 +1,5 @@
 <template>
-    <base-dialog class="results" :show="active"
-        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
+    <base-dialog class="results" :show="active" :class="breakpoints">
         <div class="title">Результаты</div>
         <div class="info">
             <testing-results-item v-for="result in results" :key="result.id"
@@ -19,9 +18,11 @@
 import BaseDialog from "@/components/BaseDialog";
 import BaseButton from "@/components/BaseButton";
 import TestingResultsItem from "@/components/TestingResultsItem";
+import { breakpointsMixin } from "@/mixins";
 
 
 export default {
+    mixins: [breakpointsMixin],
     components: { BaseDialog, BaseButton, TestingResultsItem },
 
     props: {

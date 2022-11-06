@@ -7,8 +7,8 @@
       </div>
       <div class="test-btn">
         <router-link :to="'/testing/' + deck.slug">
-          <base-button class="btn" :disabled="deck.cards_number < 4">
-            {{ deck.cards_number < 4 ? "Минимум 4 карты для теста" : "Тест" }} </base-button>
+          <base-button class="btn" :class="{ 'disabled': isTestAvailable }" :disabled="isTestAvailable">
+            {{ isTestAvailable ? "Минимум 4 карты для теста" : "Тест" }} </base-button>
         </router-link>
         <base-button v-show="$store.getters.mdScreen" @click="toggleSettings" class="btn settings-btn">Настройки
         </base-button>
@@ -64,6 +64,11 @@ export default {
     return { toast };
   },
 
+  computed: {
+    isTestAvailable() {
+      return this.deck.cards_number < 4;
+    }
+  },
 
   methods: {
     async onRemove() {
@@ -134,6 +139,10 @@ export default {
       width: 100%;
       font-size: 1em;
       padding: 10px;
+
+      &.disabled {
+        background: dimgrey;
+      }
     }
 
     .settings-btn {
