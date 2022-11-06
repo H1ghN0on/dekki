@@ -10,7 +10,7 @@ import store from "@/store";
 // Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
 
-axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
 
 const toastOptions = {
   position: POSITION.BOTTOM_RIGHT,
