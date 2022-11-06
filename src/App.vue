@@ -1,5 +1,5 @@
 <template>
-  <router-view></router-view>
+  <router-view v-responsive></router-view>
 </template>
 
 <script>

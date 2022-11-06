@@ -1,16 +1,18 @@
 <template>
-
-  <the-header />
-  <Suspense>
-    <template #default>
-      <decks-component class="deck-list" />
-    </template>
-    <template #fallback>
-      <div class="loading">
-        <base-loading />
-      </div>
-    </template>
-  </Suspense>
+  <div>
+    <the-header />
+    <Suspense>
+      <template #default>
+        <decks-component class="deck-list"
+          :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }" />
+      </template>
+      <template #fallback>
+        <div class="loading">
+          <base-loading />
+        </div>
+      </template>
+    </Suspense>
+  </div>
 </template>
 
 <script>
@@ -41,5 +43,14 @@ export default {
   width: 70vw;
   margin: 0 auto;
   margin-top: 90px;
+
+  &.lg {
+    margin-top: 50px;
+    width: 80vw;
+  }
+
+  &.md {
+    width: 90vw;
+  }
 }
 </style>

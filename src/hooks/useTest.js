@@ -1,8 +1,12 @@
-import axios from "axios";
-import { reactive } from "vue";
-import { watch } from "vue";
+import { Api } from "@/api";
+import { reactive, watch } from "vue";
+import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
 
 export default function useTest(deckSlug) {
+  const toast = useToast();
+  const router = useRouter();
+
   const testing = reactive({
     questions: [],
     correct: [],
@@ -14,7 +18,15 @@ export default function useTest(deckSlug) {
   });
 
   const createTest = async () => {
-    const { data } = await axios(`/decks/create-test/${deckSlug}`);
+    const [error, data] = await Api().createTest(deckSlug);
+    if (error) {
+      console.log(error);
+      toast.error("Попробуйте позже", {
+        timeout: 2000,
+      });
+      router.push("/decks");
+      return;
+    }
     testing.questions = data;
     testing.current = data[testing.currentNumber];
     testing.current.isAnswered = "";

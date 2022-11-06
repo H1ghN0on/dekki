@@ -1,5 +1,7 @@
 <template>
-  <div class="deck-list">
+
+  <div class="deck-list"
+    :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
     <div v-if="decks.length">
 
       <div class="deck deck-add">
@@ -61,6 +63,7 @@ export default {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 30px;
+
   }
 
   .empty-list {
@@ -75,6 +78,18 @@ export default {
       margin-top: 30px;
       font-size: 1.2em;
       padding: 15px 25px;
+    }
+  }
+
+  &.lg {
+    .list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &.md {
+    .list {
+      grid-template-columns: 1fr;
     }
   }
 }

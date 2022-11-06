@@ -10,13 +10,12 @@
           <base-button class="btn" :disabled="deck.cards_number < 4">
             {{ deck.cards_number < 4 ? "Минимум 4 карты для теста" : "Тест" }} </base-button>
         </router-link>
+        <base-button v-show="$store.getters.mdScreen" @click="toggleSettings" class="btn settings-btn">Настройки
+        </base-button>
       </div>
-
-
-
-
     </div>
-    <div class="card-settings">
+
+    <div class="card-settings" :class="{ 'card-settings-active': isCardSettingsActive }">
       <router-link :to="'/update/' + deck.slug">
         <b-icon-plus-circle-fill class="card-settings-item add pointer" />
       </router-link>
@@ -56,6 +55,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      isCardSettingsActive: false,
     }
   },
 
@@ -78,6 +78,10 @@ export default {
         this.$emit('remove', this.deck.slug)
       }
       this.isLoading = false;
+    },
+
+    toggleSettings() {
+      this.isCardSettingsActive = !this.isCardSettingsActive
     }
   }
 
@@ -131,6 +135,10 @@ export default {
       font-size: 1em;
       padding: 10px;
     }
+
+    .settings-btn {
+      margin-top: 10px;
+    }
   }
 
 }
@@ -173,7 +181,8 @@ export default {
 }
 
 .card-settings:hover,
-.card:hover+.card-settings {
+.card:hover+.card-settings,
+.card-settings-active {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
   max-height: 50px;
   opacity: 1;

@@ -64,12 +64,14 @@ export default {
 
 </script>
 
+
+
 <style lang="scss">
 .auth-container {
     position: relative;
     top: 0;
-
     transition: .3s ease;
+
 
     .card {
         position: relative;
@@ -111,7 +113,6 @@ export default {
             height: 70px;
             border-radius: 100%;
             background: $primary-text;
-            border-radius: 100%;
             padding: 25px;
             text-align: center;
 
@@ -180,6 +181,82 @@ export default {
                     padding: 15px 40px;
                     border-radius: 20px;
 
+                }
+            }
+        }
+
+        &.lg {
+            width: 80vw;
+            padding: 40px !important;
+
+
+            .title {
+                font-size: 2em;
+            }
+
+            .login-btn {
+                padding: 20px;
+                width: 60px;
+                height: 60px;
+                bottom: 15px;
+            }
+
+            .form {
+
+                margin-top: 50px;
+
+                .input-box {
+                    font-size: 0.9em;
+                }
+
+
+            }
+        }
+
+        &.sm {
+            .title {
+                font-size: 1.5em;
+            }
+
+            .form {
+                margin-top: 30px;
+
+                .submit-btn-box {
+                    .submit-btn {
+                        font-size: 1em;
+                        padding: 15px 35px;
+                    }
+                }
+            }
+        }
+
+        &.xs {
+            padding: 20px !important;
+
+            .login-btn {
+                padding: 15px;
+                width: 50px;
+                height: 50px;
+                top: 5px;
+            }
+
+            .title {
+                font-size: 1em;
+
+                .close {
+                    padding: 0;
+                    font-size: 2em;
+                }
+            }
+
+            .form {
+                margin-top: 30px;
+
+                .submit-btn-box {
+                    .submit-btn {
+                        font-size: 0.8em;
+                        padding: 10px 30px;
+                    }
                 }
             }
         }

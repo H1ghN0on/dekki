@@ -1,8 +1,10 @@
 <template>
-    <the-header />
-    <div class="container">
-        <auth-form @toggleAuth="toggleAuth" :registrationFields="registrationFields" :loginFields="loginFields"
-            :errors="errors" :isRegister="isRegister" @submit="handleSubmitForm" :isLoading="isLoading" />
+    <div>
+        <the-header />
+        <div class="container">
+            <auth-form @toggleAuth="toggleAuth" :registrationFields="registrationFields" :loginFields="loginFields"
+                :errors="errors" :isRegister="isRegister" @submit="handleSubmitForm" :isLoading="isLoading" />
+        </div>
     </div>
 </template>
 

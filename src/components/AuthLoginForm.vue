@@ -1,5 +1,6 @@
 <template>
-    <div class="card login">
+    <div class="card login"
+        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
 
         <div class="title">
             Вход

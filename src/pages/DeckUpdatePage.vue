@@ -1,17 +1,18 @@
 <template>
-  <the-header />
-  <Suspense>
-    <template #default>
-      <DeckUpdateComponent />
-    </template>
-    <template #fallback>
-      <div class="loading">
-        <base-loading />
-      </div>
+  <div>
+    <the-header />
+    <Suspense>
+      <template #default>
+        <DeckUpdateComponent />
+      </template>
+      <template #fallback>
+        <div class="loading">
+          <base-loading />
+        </div>
 
-    </template>
-  </Suspense>
-
+      </template>
+    </Suspense>
+  </div>
 </template>
 
 <script>

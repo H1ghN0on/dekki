@@ -1,17 +1,18 @@
 <template>
-
-    <the-header />
-    <Suspense>
-        <template #default>
-            <testing-component class="deck-list" />
-        </template>
-        <template #fallback>
-            <div class="loading">
-                <base-loading />
-                <span>Придумываем вопросы</span>
-            </div>
-        </template>
-    </Suspense>
+    <div>
+        <the-header />
+        <Suspense>
+            <template #default>
+                <testing-component class="deck-list" />
+            </template>
+            <template #fallback>
+                <div class="loading">
+                    <base-loading />
+                    <span>Придумываем вопросы</span>
+                </div>
+            </template>
+        </Suspense>
+    </div>
 </template>
   
 <script>

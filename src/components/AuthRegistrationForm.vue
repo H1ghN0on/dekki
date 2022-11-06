@@ -1,5 +1,6 @@
 <template>
-    <div class="card register">
+    <div class="card register"
+        :class="{ 'lg': $store.getters.lgScreen, 'md': $store.getters.mdScreen, 'sm': $store.getters.smScreen, 'xs': $store.getters.xsScreen }">
         <div @click="$emit('toggleAuth')" class="login-btn pointer"></div>
         <div class="title">
             <span>Регистрация</span>
@@ -70,6 +71,8 @@ export default {
             }
         }
     }
+
+
 }
 </style>
 
