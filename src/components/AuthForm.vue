@@ -91,7 +91,7 @@ export default {
             z-index: 10;
             top: -35px;
             right: -35px;
-            width: 70px;
+            width: 70px !important;
             height: 70px;
             border-radius: 100%;
             background: none;
