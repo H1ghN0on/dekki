@@ -2,8 +2,12 @@
     <div class="item" :style="cssProps">
         <div class="name">{{ name }}</div>
         <div class="progress">
-            <div v-if="progress != 0" class="bar-part bar1">{{ progress }}%</div>
-            <div v-if="100 - progress != 0" class="bar-part bar2">{{ 100 - progress }}%</div>
+            <div v-if="progress != 0" class="bar-part bar1">
+                <span v-if="progress > 5">{{ progress }}%</span>
+            </div>
+            <div v-if="100 - progress != 0" class="bar-part bar2">
+                <span v-if="100 - progress > 5">{{ 100 - progress }}%</span>
+            </div>
         </div>
     </div>
 </template>
