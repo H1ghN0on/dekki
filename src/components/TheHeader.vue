@@ -1,7 +1,7 @@
 <template>
   <header :class="breakpoints">
     <div class="logo">
-      <router-link to="/decks">正午</router-link>
+      <router-link to="/decks">デッキ</router-link>
     </div>
     <nav>
       <router-link v-if="!$store.getters.isAuthenticated" to="/auth">

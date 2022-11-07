@@ -5,6 +5,7 @@ import {
   AuthPage,
   TestingPage,
 } from "@/pages";
+
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuth } from "@/hooks";
 import store from "@/store";
@@ -37,6 +38,7 @@ const routes = [
     path: "/decks",
     component: DecksPage,
     beforeEnter: isAuthenticated,
+    meta: { title: "Колоды" },
   },
   {
     path: "/update/:deckSlug",
@@ -58,12 +60,14 @@ const routes = [
     path: "/auth",
     component: AuthPage,
     beforeEnter: ifNotAuthenticated,
+    meta: { title: "Авторизация" },
   },
 
   {
     path: "/testing/:deckSlug",
     component: TestingPage,
     beforeEnter: isAuthenticated,
+    meta: { title: "Тестирование" },
   },
 
   {
@@ -75,6 +79,12 @@ const routes = [
 const router = createRouter({
   routes,
   history: createWebHistory(process.env.BASE_URL),
+});
+
+const DEFAULT_TITLE = "Dekki";
+
+router.beforeEach((to, from, next) => {
+  (document.title = to.meta.title || DEFAULT_TITLE), next();
 });
 
 export default router;
