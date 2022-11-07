@@ -209,6 +209,10 @@ export default {
                     font-size: 0.9em;
                 }
 
+                .errors {
+                    font-size: 0.8em;
+                    top: -40px;
+                }
 
             }
         }
@@ -243,6 +247,11 @@ export default {
                         padding: 10px 30px;
                     }
                 }
+
+                .errors {
+                    font-size: 0.6em;
+                    top: -30px;
+                }
             }
         }
     }
@@ -269,8 +278,8 @@ export default {
                 top: -35px;
                 right: -35px;
                 box-shadow: none;
-                transform: scale(30);
-                transition: transform .2s ease;
+                transform: scale(100);
+                transition: transform 1s ease;
                 cursor: default;
 
                 &:before {

@@ -3,7 +3,9 @@ const AuthApi = (instance) => {
     register: async (userInfo) => {
       try {
         const data = await instance.post("/auth/users/", userInfo);
-
+        if (!data) {
+          return [{ message: "Unhandled" }];
+        }
         if (data.data) {
           return [null];
         } else {
@@ -17,6 +19,9 @@ const AuthApi = (instance) => {
     login: async (userInfo) => {
       try {
         const data = await instance.post("/auth/token/login/", userInfo);
+        if (!data) {
+          return [{ message: "Unhandled" }];
+        }
         if (data.data) {
           return [null, data.data];
         } else {

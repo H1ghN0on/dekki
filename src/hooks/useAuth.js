@@ -67,9 +67,13 @@ export default function useAuth() {
       const [error] = await Api().register(registrationFields);
 
       if (error) {
-        errors.registration = Object.values(error.response.data).map(
-          (err) => err[0]
-        );
+        if (errors.response) {
+          errors.registration = Object.values(error.response.data).map(
+            (err) => err[0]
+          );
+        } else {
+          errors.login.push("Ошибка случилась (на нашей стороне)");
+        }
       } else {
         registrationFields.username = "";
         registrationFields.email = "";
@@ -90,7 +94,13 @@ export default function useAuth() {
     if (!errors.login.length) {
       const [error, data] = await Api().login(loginFields);
       if (error) {
-        errors.login = Object.values(error.response.data).map((err) => err[0]);
+        if (error.response) {
+          errors.login = Object.values(error.response.data).map(
+            (err) => err[0]
+          );
+        } else {
+          errors.login.push("Ошибка случилась (на нашей стороне)");
+        }
       } else {
         loginFields.username = "";
         loginFields.email = "";
