@@ -180,10 +180,7 @@ export default {
             width: 100vw;
 
             .progress-bar {
-                position: absolute;
-                bottom: 10px;
-                left: 50%;
-                transform: translate(-50%, 0);
+                display: none;
             }
 
         }
@@ -195,6 +192,8 @@ export default {
     }
 
     &.sm {
+
+
 
 
         .preview {

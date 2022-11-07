@@ -13,7 +13,7 @@ export default function useTest(deckSlug) {
     wrong: [],
     current: null,
     currentNumber: 0,
-    timeForNextQuestion: 2500,
+    timeForNextQuestion: 2000,
     testCreationLoading: false,
   });
 
