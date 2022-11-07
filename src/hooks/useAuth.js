@@ -66,13 +66,14 @@ export default function useAuth() {
     if (!errors.registration.length) {
       const [error] = await Api().register(registrationFields);
 
+      console.log(error);
       if (error) {
-        if (errors.response) {
+        if (error.response) {
           errors.registration = Object.values(error.response.data).map(
             (err) => err[0]
           );
         } else {
-          errors.login.push("Ошибка случилась (на нашей стороне)");
+          errors.registration.push("Ошибка случилась (на нашей стороне)");
         }
       } else {
         registrationFields.username = "";
