@@ -84,6 +84,7 @@ body {
 }
 
 input {
+  font-family: "Raleway";
   color: $primary-text;
 }
 

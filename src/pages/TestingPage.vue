@@ -1,7 +1,7 @@
 <template>
     <div>
         <the-header />
-        <Suspense>
+        <Suspense v-if="isTestSetuped">
             <template #default>
                 <testing-component class="deck-list" />
             </template>
@@ -12,6 +12,7 @@
                 </div>
             </template>
         </Suspense>
+        <TestingSettings v-else class="testing-settings" @submit="isTestSetuped = true" />
     </div>
 </template>
   
@@ -19,10 +20,17 @@
 import TestingComponent from "@/components/TestingComponent"
 import BaseLoading from "@/components/BaseLoading"
 import TheHeader from "@/components/TheHeader"
+import TestingSettings from "@/components/TestingSettings"
 
 
 export default {
-    components: { TestingComponent, TheHeader, BaseLoading }
+    components: { TestingComponent, TheHeader, BaseLoading, TestingSettings },
+    data() {
+        return {
+            isTestSetuped: false
+        }
+    }
+
 }
 
 </script>
@@ -40,6 +48,10 @@ export default {
         font-size: 1.5em;
         margin-top: 30px;
     }
+}
+
+.testing-settings {
+    height: 80vh;
 }
 </style>
   
