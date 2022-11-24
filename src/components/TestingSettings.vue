@@ -1,14 +1,14 @@
 <template>
 
-    <div class="testing-settings">
+    <div class="testing-settings" :class="breakpoints">
         <div class="testing-number">
-            <label>Сколько карточек использовать в тестировании?</label>
+            <label>Количество карточек для тестирования (с конца)</label>
             <div class="input-container">
-                <base-range :min="0" :max="100" />
-                <base-input class="number" type="number" :min="'0'" :max="'100'" />
+                <base-range v-model="cardsForTest" :min="4" :max="cardsNumber" />
+                <base-input v-model="cardsForTest" class="number" type="number" :min="4" :max="cardsNumber" />
             </div>
         </div>
-        <base-button class="submit-btn" @click="$emit('submit')">
+        <base-button class="submit-btn" @click="$emit('submit', { cardsForTest })">
             К тесту
         </base-button>
     </div>
@@ -20,9 +20,34 @@
 import BaseButton from "@/components/BaseButton"
 import BaseRange from "@/components/BaseRange"
 import BaseInput from "@/components/BaseInput"
+import { useDeck } from "@/hooks"
+import { useRoute } from "vue-router"
+import { ref } from "vue"
+import { breakpointsMixin } from "@/mixins"
 
 export default {
     components: { BaseButton, BaseRange, BaseInput },
+    mixins: [breakpointsMixin],
+    async setup() {
+        const route = useRoute();
+        const deckSlug = route.params.deckSlug;
+
+        const { getStructuredDeck } = useDeck();
+
+        const deck = await getStructuredDeck(deckSlug);
+        const cardsNumber = ref(deck.cards.length)
+        return {
+            cardsNumber
+        }
+    },
+
+    data() {
+        return {
+            cardsForTest: this.cardsNumber,
+        }
+    }
+
+
 }
 
 </script>
@@ -70,6 +95,46 @@ export default {
         margin-top: 10px;
         font-size: 0.9em;
         padding: 15px 30px;
+    }
+
+    &.lg {
+        margin: 0 15px;
+
+        .testing-number {
+            label {
+                font-size: 1.3em;
+                text-align: center;
+            }
+        }
+    }
+
+    &.md {
+
+        .testing-number {
+            label {
+                font-size: 1.1em;
+                display: flex;
+                justify-content: center;
+            }
+
+            .input-container {
+                flex-direction: column;
+
+                .range {
+                    width: 80%;
+                    background: none;
+                    margin: 0 auto;
+                }
+
+                .number {
+                    margin: 0 auto;
+                    width: 40%;
+                }
+            }
+        }
+
+
+
     }
 
 }

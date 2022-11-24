@@ -1,8 +1,10 @@
 const DecksApi = (instance) => {
   return {
-    createTest: async (deckSlug) => {
+    createTest: async (deckSlug, cardsNumber) => {
       try {
-        const { data } = await instance.get(`/decks/create-test/${deckSlug}`);
+        const { data } = await instance.get(
+          `/decks/create-test/${deckSlug}/${cardsNumber}`
+        );
         if (!data) {
           return [{ message: "Unhandled" }, {}];
         }

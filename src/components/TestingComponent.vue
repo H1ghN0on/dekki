@@ -37,11 +37,18 @@ export default {
         DeckUpdatePreview, TestingAnswerList, TestingTools, BaseProgressBar, BaseLoading, TestingResults,
     },
 
+    props: {
+        testSettings: {
+            required: true,
+            type: Object,
+        }
+    },
+
     data() {
         return { isEndPhase: false, }
     },
 
-    async setup() {
+    async setup(props) {
 
         const updateCardPreview = (item) => {
             const card = testing.current.card.values.find(value => value.field.name === item.name);
@@ -55,7 +62,7 @@ export default {
         const deckSlug = route.params.deckSlug;
         const { testing, createTest, onAnswer, testingWatcher } = await useTest(deckSlug);
 
-        await createTest();
+        await createTest(props.testSettings.cardsForTest);
         const { getStructuredDeck } = useDeck(deckSlug);
         const { dbStructure } = await getStructuredDeck(deckSlug, updateCardPreview);
 

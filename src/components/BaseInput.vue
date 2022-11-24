@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     updateValue(e) {
-      this.$emit("update:modelValue", e.target.value);
+      this.$emit("update:modelValue", this.type === "number" ? +e.target.value : e.target.value);
     },
   },
   computed: {

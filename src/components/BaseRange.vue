@@ -1,5 +1,5 @@
 <template>
-    <input class="range" type="range" :max="max" :min="min" />
+    <input :value="modelValue" @input="updateValue" class="range" type="range" :max="max" :min="min" />
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
     },
     methods: {
         updateValue(e) {
-            this.$emit("update:modelValue", e.target.value);
+            this.$emit("update:modelValue", +e.target.value);
         },
     },
 };

@@ -1,9 +1,9 @@
 <template>
     <div>
         <the-header />
-        <Suspense v-if="isTestSetuped">
+        <Suspense v-if="testSetup">
             <template #default>
-                <testing-component class="deck-list" />
+                <testing-component class="deck-list" :test-settings="testSetup" />
             </template>
             <template #fallback>
                 <div class="loading">
@@ -12,7 +12,17 @@
                 </div>
             </template>
         </Suspense>
-        <TestingSettings v-else class="testing-settings" @submit="isTestSetuped = true" />
+        <Suspense v-else>
+            <template #default>
+                <TestingSettings class="testing-settings" @submit="(data) => { testSetup = data }" />
+            </template>
+            <template #fallback>
+                <div class="loading">
+                    <base-loading />
+                    <span>Придумываем вопросы</span>
+                </div>
+            </template>
+        </Suspense>
     </div>
 </template>
   
@@ -27,7 +37,7 @@ export default {
     components: { TestingComponent, TheHeader, BaseLoading, TestingSettings },
     data() {
         return {
-            isTestSetuped: false
+            testSetup: false
         }
     }
 

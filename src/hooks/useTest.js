@@ -17,8 +17,8 @@ export default function useTest(deckSlug) {
     testCreationLoading: false,
   });
 
-  const createTest = async () => {
-    const [error, data] = await Api().createTest(deckSlug);
+  const createTest = async (cardsNumber) => {
+    const [error, data] = await Api().createTest(deckSlug, cardsNumber);
     if (error) {
       console.log(error);
       toast.error("Попробуйте позже", {
