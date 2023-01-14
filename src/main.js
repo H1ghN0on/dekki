@@ -11,8 +11,6 @@ import store from "@/store";
 import "vue-toastification/dist/index.css";
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
-axios.defaults.headers.common["Bypass-Tunnel-Reminder"] =
-  "remember our promise";
 
 const toastOptions = {
   position: POSITION.BOTTOM_RIGHT,
