@@ -67,6 +67,7 @@ const routes = [
     path: "/testing/:deckSlug",
     component: TestingPage,
     beforeEnter: isAuthenticated,
+    props: (route) => ({ query: route.query.length }),
     meta: { title: "Тестирование" },
   },
 

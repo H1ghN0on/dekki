@@ -30,6 +30,7 @@ import TestingResults from "@/components/TestingResults";
 import { useTest, useDeck } from "@/hooks"
 import { useRoute } from "vue-router"
 import { breakpointsMixin } from "@/mixins";
+import { Api } from "@/api";
 
 export default {
     mixins: [breakpointsMixin],
@@ -48,6 +49,20 @@ export default {
         return { isEndPhase: false, }
     },
 
+    watch: {
+        isEndPhase(val) {
+            if (this.testSettings.isExam && !this.testing.wrong.length && val) {
+                this.removeExamDeck();
+            }
+        }
+    },
+
+    methods: {
+        async removeExamDeck() {
+            await Api().removeDeck(this.testing.examDeck.slug)
+        }
+    },
+
     async setup(props) {
 
         const updateCardPreview = (item) => {
@@ -60,14 +75,13 @@ export default {
 
         const route = useRoute();
         const deckSlug = route.params.deckSlug;
-        const { testing, createTest, onAnswer, testingWatcher } = await useTest(deckSlug);
+        const { testing, createTest, onAnswer, testingWatcher } = await useTest(deckSlug, props.testSettings.isExam);
 
-        await createTest(props.testSettings.cardsForTest);
+        await createTest(props.testSettings);
         const { getStructuredDeck } = useDeck(deckSlug);
         const { dbStructure } = await getStructuredDeck(deckSlug, updateCardPreview);
 
         testingWatcher(() => {
-
             dbStructure.front = dbStructure.front.map(updateCardPreview);
             dbStructure.back = dbStructure.back.map(updateCardPreview);
         })

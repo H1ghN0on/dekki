@@ -3,7 +3,7 @@ import { reactive, watch } from "vue";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
 
-export default function useTest(deckSlug) {
+export default function useTest(deckSlug, isExam = false) {
   const toast = useToast();
   const router = useRouter();
 
@@ -15,12 +15,12 @@ export default function useTest(deckSlug) {
     currentNumber: 0,
     timeForNextQuestion: 2000,
     testCreationLoading: false,
+    examDeck: null,
   });
 
-  const createTest = async (cardsNumber) => {
-    const [error, data] = await Api().createTest(deckSlug, cardsNumber);
+  const createTest = async (testSettings) => {
+    const [error, data] = await Api().createTest(deckSlug, testSettings);
     if (error) {
-      console.log(error);
       toast.error("Попробуйте позже", {
         timeout: 2000,
       });
@@ -31,6 +31,21 @@ export default function useTest(deckSlug) {
     testing.current = data[testing.currentNumber];
     testing.current.isAnswered = "";
     testing.currentNumber = 0;
+
+    if (isExam) {
+      const [error, data] = await Api().copyDeckStructure(
+        deckSlug,
+        "Problems: " + deckSlug
+      );
+      if (error) {
+        toast.error(`Ошибка случилась : ${error}`, {
+          timeout: 2000,
+        });
+        router.push("/decks");
+        return;
+      }
+      testing.examDeck = data;
+    }
   };
 
   const onAnswer = (value) => {
@@ -39,6 +54,22 @@ export default function useTest(deckSlug) {
       testing.correct.push(testing.current.card);
     } else {
       testing.wrong.push(testing.current.card);
+      if (isExam) {
+        Api().addCardToDeck(
+          {
+            values: testing.current.card.values.map((_value) => {
+              const trueFieldId = testing.examDeck.fields.find(
+                (field) => field.name == _value.field.name
+              ).id;
+              return {
+                field_id: trueFieldId,
+                value: _value.value,
+              };
+            }),
+          },
+          testing.examDeck.slug
+        );
+      }
     }
     setTimeout(async () => {
       if (testing.questions.length !== testing.currentNumber + 1) {

@@ -102,6 +102,17 @@ const DecksApi = (instance) => {
         return [e];
       }
     },
+
+    copyDeckStructure: async (slug, newName) => {
+      try {
+        const { data } = await instance.get(
+          `/decks/copy-deck-structure/${slug}/${newName}`
+        );
+        return [null, data];
+      } catch (e) {
+        return [e];
+      }
+    },
   };
 };
 

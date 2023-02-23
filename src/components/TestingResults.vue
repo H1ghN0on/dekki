@@ -21,6 +21,7 @@ import TestingResultsItem from "@/components/TestingResultsItem";
 import { breakpointsMixin } from "@/mixins";
 
 
+
 export default {
     mixins: [breakpointsMixin],
     components: { BaseDialog, BaseButton, TestingResultsItem },

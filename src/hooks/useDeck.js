@@ -67,6 +67,11 @@ export default function useDeck() {
   };
 
   const getStructuredDeck = async (deckSlug, toMap) => {
+    const data = await getRawDeck(deckSlug);
+    return parseRawDeck(data, toMap);
+  };
+
+  const getRawDeck = async (deckSlug) => {
     const [error, data] = await Api().getDeck(deckSlug);
 
     if (error) {
@@ -76,7 +81,7 @@ export default function useDeck() {
       });
     }
 
-    return parseRawDeck(data, toMap);
+    return data;
   };
 
   const getMyDecks = async () => {
@@ -121,5 +126,6 @@ export default function useDeck() {
     addCardToDeck,
     getRawStructure,
     getDefaultDeck,
+    getRawDeck,
   };
 }
