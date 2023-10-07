@@ -50,7 +50,7 @@ export default function useTest(deckSlug) {
 
   const onAnswer = (value) => {
     quest.current.answered = value;
-    if (quest.current.correct_answer.includes(value)) {
+    if (quest.current.answers.includes(value)) {
       quest.correct.push(quest.current.card);
     } else {
       quest.wrong.push(quest.current.card);

@@ -7,18 +7,10 @@
             <base-progress-bar class="progress-bar" :class="{ 'active': quest.current.answered }"
                 :for-watch="quest.current.answered" :fill-time="quest.timeForNextQuestion - 500" :delayTime=".4" />
 
-            <div class="quest-input">
-                <base-input v-model="answerInput" :label="'Введите ответ'" />
-                <div class="quest-submit">
-                    <base-button class="quest-submit-btn" @click="console.log('clicked')">Продолжить</base-button>
-                    <div class="quest-hint">
-                        Пральна!
-                    </div>
-                </div>
-            </div>
+            <testing-quest-answer class="quest-answer" @answer="onAnswer" :current="quest.current" />
 
-            <testing-tools class="tools" :correct="quest.correct.length" :wrong="quest.wrong.length" />
         </div>
+        <testing-tools class="tools" :correct="quest.correct.length" :wrong="quest.wrong.length" />
     </div>
 </template>
 
@@ -27,9 +19,8 @@
 
 import DeckUpdatePreview from "@/components/DeckUpdatePreview"
 import BaseProgressBar from "@/components/BaseProgressBar"
-import BaseInput from "@/components/BaseInput"
-import BaseButton from "@/components/BaseButton"
 import TestingTools from "@/components/TestingTools"
+import TestingQuestAnswer from "@/components/TestingQuestAnswer"
 import { breakpointsMixin } from "@/mixins";
 import { useQuest, useDeck } from "@/hooks"
 import { useRoute } from "vue-router"
@@ -37,7 +28,7 @@ import { useRoute } from "vue-router"
 export default {
     mixins: [breakpointsMixin],
     components: {
-        DeckUpdatePreview, BaseProgressBar, BaseInput, BaseButton, TestingTools
+        DeckUpdatePreview, BaseProgressBar, TestingTools, TestingQuestAnswer
     },
 
     props: {
@@ -54,6 +45,7 @@ export default {
     async setup(props) {
 
         const updateCardPreview = (item) => {
+            console.log("snova tut");
             const card = quest.current.card.values.find(value => value.field.name === item.name);
             return {
                 ...item,
