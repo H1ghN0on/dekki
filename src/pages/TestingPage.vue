@@ -1,7 +1,20 @@
 <template>
     <div>
         <the-header />
+
         <Suspense v-if="testSetup">
+            <template #default>
+                <testing-quest-component class="deck-list" :test-settings="testSetup" />
+            </template>
+            <template #fallback>
+                <div class="loading">
+                    <base-loading />
+                    <span>Придумываем вопросы</span>
+                </div>
+            </template>
+        </Suspense>
+
+        <!-- <Suspense v-if="testSetup">
             <template #default>
                 <testing-test-component class="deck-list" :test-settings="testSetup" />
             </template>
@@ -11,7 +24,7 @@
                     <span>Придумываем вопросы</span>
                 </div>
             </template>
-        </Suspense>
+        </Suspense> --->
         <Suspense v-else>
             <template #default>
                 <TestingSettings class="testing-settings" @submit="(data) => { testSetup = data }" />
@@ -27,14 +40,16 @@
 </template>
   
 <script>
-import TestingTestComponent from "@/components/TestingTestComponent"
+//import TestingTestComponent from "@/components/TestingTestComponent"
+import TestingQuestComponent from "@/components/TestingQuestComponent"
 import BaseLoading from "@/components/BaseLoading"
 import TheHeader from "@/components/TheHeader"
 import TestingSettings from "@/components/TestingSettings"
 
 
 export default {
-    components: { TestingTestComponent, TheHeader, BaseLoading, TestingSettings },
+    //components: { TestingTestComponent, TheHeader, BaseLoading, TestingSettings },
+    components: { TestingQuestComponent, TheHeader, TestingSettings, BaseLoading },
     data() {
         return {
             testSetup: false

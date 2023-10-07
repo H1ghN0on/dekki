@@ -29,14 +29,11 @@ export default function useTest(deckSlug, isExam = false) {
     }
     testing.questions = data;
     testing.current = data[testing.currentNumber];
-    testing.current.isAnswered = "";
+    testing.current.answered = "";
     testing.currentNumber = 0;
 
     if (isExam) {
-      const [error, data] = await Api().copyDeckStructure(
-        deckSlug,
-        "Problems: " + deckSlug
-      );
+      const [error, data] = await Api().copyDeckStructure(deckSlug, "Problems: " + deckSlug);
       if (error) {
         toast.error(`Ошибка случилась : ${error}`, {
           timeout: 2000,

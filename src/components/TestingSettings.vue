@@ -18,6 +18,12 @@
                 </div>
                 <label>Неверные ответы в отдельную колоду</label>
             </div>
+            <div class="testing-setting testing-wrong-remember inline">
+                <div class="input-container">
+                    <base-checkbox v-model="testSettings.isQuestionsLimit" />
+                </div>
+                <label>Установить лимит 100 вопросов</label>
+            </div>
         </div>
         <base-button class="submit-btn" @click="$emit('submit', testSettings)">
             К тесту
@@ -66,6 +72,8 @@ export default {
                 cardsForTest: this.cardsNumber,
                 examType: "",
                 shouldRememberWrong: false,
+                isQuestionsLimit: false,
+                questionsLimit: 100,
             },
             examTypes: [
                 { name: "Тест", accessor: "test" },
