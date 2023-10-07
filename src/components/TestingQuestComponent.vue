@@ -172,6 +172,55 @@ export default {
         z-index: 10000;
     }
 
+    &.lg {
+
+        .preview {
+            width: 55vw;
+        }
+
+        .testing {
+            width: 45vw;
+        }
+    }
+
+    &.md {
+        flex-direction: column;
+        padding-top: 0;
+
+        .preview {
+            width: 60vw;
+            order: 1;
+            margin-left: 0;
+        }
+
+        .quest {
+
+            order: 2;
+            width: 100vw;
+
+            .progress-bar {
+                display: none;
+            }
+
+        }
+
+        .tools {
+            position: static;
+            padding: 20px 0;
+        }
+    }
+
+    &.sm {
+
+        .preview {
+            width: 80vw;
+
+        }
+
+
+
+    }
+
 
 }
 </style>

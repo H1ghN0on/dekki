@@ -87,5 +87,19 @@ export default {
         }
     }
 
+
+    &.md {
+        .quest-submit {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quest-hint {
+            margin-left: 0;
+            margin-top: 5px;
+            font-weight: bold;
+            font-size: 1.0em;
+        }
+    }
 }
 </style>
