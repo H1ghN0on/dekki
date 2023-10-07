@@ -3,7 +3,7 @@
         <the-header />
         <Suspense v-if="testSetup">
             <template #default>
-                <testing-component class="deck-list" :test-settings="testSetup" />
+                <testing-test-component class="deck-list" :test-settings="testSetup" />
             </template>
             <template #fallback>
                 <div class="loading">
@@ -27,14 +27,14 @@
 </template>
   
 <script>
-import TestingComponent from "@/components/TestingComponent"
+import TestingTestComponent from "@/components/TestingTestComponent"
 import BaseLoading from "@/components/BaseLoading"
 import TheHeader from "@/components/TheHeader"
 import TestingSettings from "@/components/TestingSettings"
 
 
 export default {
-    components: { TestingComponent, TheHeader, BaseLoading, TestingSettings },
+    components: { TestingTestComponent, TheHeader, BaseLoading, TestingSettings },
     data() {
         return {
             testSetup: false

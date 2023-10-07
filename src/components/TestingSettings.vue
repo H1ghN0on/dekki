@@ -9,18 +9,19 @@
                         :max="cardsNumber" />
                 </div>
             </div>
-            <div class="testing-setting testing-is-exam inline">
-                <label>Режим экзамена</label>
+            <div class="testing-setting testing-exam-types">
+                <base-select :items="examTypes" v-model="testSettings.examType" />
+            </div>
+            <div class="testing-setting testing-wrong-remember inline">
                 <div class="input-container">
-                    <base-checkbox v-model="testSettings.isExam" />
+                    <base-checkbox v-model="testSettings.shouldRememberWrong" />
                 </div>
-
+                <label>Неверные ответы в отдельную колоду</label>
             </div>
         </div>
         <base-button class="submit-btn" @click="$emit('submit', testSettings)">
             К тесту
         </base-button>
-
     </div>
 </template>
 
@@ -32,6 +33,7 @@
 import BaseButton from "@/components/BaseButton"
 import BaseRange from "@/components/BaseRange"
 import BaseInput from "@/components/BaseInput"
+import BaseSelect from "@/components/BaseSelect"
 import BaseCheckbox from "@/components/BaseCheckbox"
 import { useDeck } from "@/hooks"
 import { useRoute } from "vue-router"
@@ -39,7 +41,7 @@ import { ref } from "vue"
 import { breakpointsMixin } from "@/mixins"
 
 export default {
-    components: { BaseButton, BaseRange, BaseInput, BaseCheckbox },
+    components: { BaseButton, BaseRange, BaseInput, BaseSelect, BaseCheckbox },
     mixins: [breakpointsMixin],
     async setup() {
         const route = useRoute();
@@ -54,15 +56,21 @@ export default {
         }
     },
 
-
+    mounted() {
+        this.testSettings.examType = this.examTypes[0];
+    },
 
     data() {
         return {
             testSettings: {
                 cardsForTest: this.cardsNumber,
-                isExam: false,
-            }
-
+                examType: "",
+                shouldRememberWrong: false,
+            },
+            examTypes: [
+                { name: "Тест", accessor: "test" },
+                { name: "Вопрос-ответ", accessor: "quest" },
+            ],
         }
     }
 
@@ -88,13 +96,20 @@ export default {
     }
 
     .testing-setting {
+        width: 100%;
+        margin-top: 15px;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
         &.inline {
             display: flex;
             align-items: center;
 
             .input-container {
                 margin-top: 0;
-                margin-left: 15px;
+                margin-right: 15px;
             }
         }
 
@@ -121,6 +136,14 @@ export default {
                 padding: 10px 0;
                 padding-left: 5px;
 
+            }
+        }
+
+        &.testing-wrong-remember {
+            font-size: 1em;
+
+            label {
+                font-size: 1em;
             }
         }
 
