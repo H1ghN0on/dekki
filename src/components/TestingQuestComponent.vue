@@ -1,16 +1,16 @@
 <template>
     <div class="container" :class="breakpoints">
-        <deck-update-preview :fixed-side="quest.current.side" :front="dbStructure.front" :back="dbStructure.back"
+        <deck-update-preview :fixed-side="answering.current.side" :front="dbStructure.front" :back="dbStructure.back"
             class="preview" />
 
-        <div class="quest" v-if="!quest.questCreationLoading">
-            <base-progress-bar class="progress-bar" :class="{ 'active': quest.current.answered }"
-                :for-watch="quest.current.answered" :fill-time="quest.timeForNextQuestion - 500" :delayTime=".4" />
+        <div class="quest" v-if="!answering.questCreationLoading">
+            <base-progress-bar class="progress-bar" :class="{ 'active': answering.current.answered }"
+                :for-watch="answering.current.answered" :fill-time="answering.timeForNextQuestion - 500" :delayTime=".4" />
 
-            <testing-quest-answer class="quest-answer" @answer="onAnswer" :current="quest.current" />
+            <testing-quest-answer class="quest-answer" @answer="onAnswer" :current="answering.current" />
 
         </div>
-        <testing-tools class="tools" :correct="quest.correct.length" :wrong="quest.wrong.length" />
+        <testing-tools class="tools" :correct="answering.correct.length" :wrong="answering.wrong.length" />
     </div>
 </template>
 
@@ -21,9 +21,8 @@ import DeckUpdatePreview from "@/components/DeckUpdatePreview"
 import BaseProgressBar from "@/components/BaseProgressBar"
 import TestingTools from "@/components/TestingTools"
 import TestingQuestAnswer from "@/components/TestingQuestAnswer"
-import { breakpointsMixin } from "@/mixins";
-import { useQuest, useDeck } from "@/hooks"
-import { useRoute } from "vue-router"
+import { breakpointsMixin } from "@/mixins"
+import { useExam } from "@/hooks"
 
 export default {
     mixins: [breakpointsMixin],
@@ -43,30 +42,8 @@ export default {
     },
 
     async setup(props) {
-
-        const updateCardPreview = (item) => {
-            console.log("snova tut");
-            const card = quest.current.card.values.find(value => value.field.name === item.name);
-            return {
-                ...item,
-                value: card.value
-            }
-        }
-
-        const route = useRoute();
-        const deckSlug = route.params.deckSlug;
-        const { quest, createQuest, onAnswer, questWatcher } = await useQuest(deckSlug);
-
-        await createQuest(props.testSettings);
-        const { getStructuredDeck } = useDeck(deckSlug);
-        const { dbStructure } = await getStructuredDeck(deckSlug, updateCardPreview);
-
-        questWatcher(() => {
-            dbStructure.front = dbStructure.front.map(updateCardPreview);
-            dbStructure.back = dbStructure.back.map(updateCardPreview);
-        })
-
-        return { quest, dbStructure, onAnswer, createQuest };
+        const { answering, onAnswer, dbStructure } = await useExam(props.testSettings, "quest");
+        return { answering, onAnswer, dbStructure };
     },
 
 }

@@ -7,7 +7,7 @@ export default function useTest(deckSlug, isExam = false) {
   const toast = useToast();
   const router = useRouter();
 
-  const testing = reactive({
+  const answering = reactive({
     questions: [],
     correct: [],
     wrong: [],
@@ -18,7 +18,7 @@ export default function useTest(deckSlug, isExam = false) {
     examDeck: null,
   });
 
-  const createTest = async (testSettings) => {
+  const createExam = async (testSettings) => {
     const [error, data] = await Api().createTest(deckSlug, testSettings);
     if (error) {
       toast.error("Попробуйте позже", {
@@ -27,10 +27,10 @@ export default function useTest(deckSlug, isExam = false) {
       router.push("/decks");
       return;
     }
-    testing.questions = data;
-    testing.current = data[testing.currentNumber];
-    testing.current.answered = "";
-    testing.currentNumber = 0;
+    answering.questions = data;
+    answering.current = data[answering.currentNumber];
+    answering.current.answered = "";
+    answering.currentNumber = 0;
 
     if (isExam) {
       const [error, data] = await Api().copyDeckStructure(deckSlug, "Problems: " + deckSlug);
@@ -41,21 +41,21 @@ export default function useTest(deckSlug, isExam = false) {
         router.push("/decks");
         return;
       }
-      testing.examDeck = data;
+      answering.examDeck = data;
     }
   };
 
   const onAnswer = (value) => {
-    testing.current.answered = value;
-    if (testing.current.correct_answer === value) {
-      testing.correct.push(testing.current.card);
+    answering.current.answered = value;
+    if (answering.current.correct_answer === value) {
+      answering.correct.push(answering.current.card);
     } else {
-      testing.wrong.push(testing.current.card);
+      answering.wrong.push(answering.current.card);
       if (isExam) {
         Api().addCardToDeck(
           {
-            values: testing.current.card.values.map((_value) => {
-              const trueFieldId = testing.examDeck.fields.find(
+            values: answering.current.card.values.map((_value) => {
+              const trueFieldId = answering.examDeck.fields.find(
                 (field) => field.name == _value.field.name
               ).id;
               return {
@@ -64,30 +64,30 @@ export default function useTest(deckSlug, isExam = false) {
               };
             }),
           },
-          testing.examDeck.slug
+          answering.examDeck.slug
         );
       }
     }
     setTimeout(async () => {
-      if (testing.questions.length !== testing.currentNumber + 1) {
-        testing.current = testing.questions[++testing.currentNumber];
-        testing.current.answered = "";
+      if (answering.questions.length !== answering.currentNumber + 1) {
+        answering.current = answering.questions[++answering.currentNumber];
+        answering.current.answered = "";
       } else {
-        testing.testCreationLoading = true;
-        await createTest();
-        testing.testCreationLoading = false;
+        answering.testCreationLoading = true;
+        await createExam();
+        answering.testCreationLoading = false;
       }
-    }, testing.timeForNextQuestion);
+    }, answering.timeForNextQuestion);
   };
 
-  const testingWatcher = (watcher) => {
-    return watch(testing, watcher);
+  const answeringWatcher = (watcher) => {
+    return watch(answering, watcher);
   };
 
   return {
-    createTest,
-    testing,
+    createExam,
+    answering,
     onAnswer,
-    testingWatcher,
+    answeringWatcher,
   };
 }

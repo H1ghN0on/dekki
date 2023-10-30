@@ -1,20 +1,20 @@
 <template>
     <div class="container" :class="breakpoints">
-        <testing-results :active="isEndPhase" :correct="testing.correct" :wrong="testing.wrong" />
-        <deck-update-preview :fixed-side="testing.current.side" :front="dbStructure.front" :back="dbStructure.back"
+        <testing-results :active="isEndPhase" :correct="answering.correct" :wrong="answering.wrong" />
+        <deck-update-preview :fixed-side="answering.current.side" :front="dbStructure.front" :back="dbStructure.back"
             class="preview" />
-        <div class="testing" v-if="!testing.testCreationLoading">
-            <base-progress-bar class="progress-bar" :class="{ 'active': testing.current.answered }"
-                :for-watch="testing.current.answered" :fill-time="testing.timeForNextQuestion - 500" :delayTime=".4" />
-            <testing-answer-list @answer="onAnswer" class="answers" :current="testing.current" />
+        <div class="testing" v-if="!answering.testCreationLoading">
+            <base-progress-bar class="progress-bar" :class="{ 'active': answering.current.answered }"
+                :for-watch="answering.current.answered" :fill-time="answering.timeForNextQuestion - 500" :delayTime=".4" />
+            <testing-answer-list @answer="onAnswer" class="answers" :current="answering.current" />
         </div>
         <div class="loading" v-else>
             <base-loading />
             <span>Больше вопросов</span>
         </div>
 
-        <testing-tools class="tools" @end="isEndPhase = true" :correct="testing.correct.length"
-            :wrong="testing.wrong.length" />
+        <testing-tools class="tools" @end="isEndPhase = true" :correct="answering.correct.length"
+            :wrong="answering.wrong.length" />
     </div>
 </template>
 
@@ -27,8 +27,7 @@ import TestingAnswerList from "@/components/TestingAnswerList"
 import BaseProgressBar from "@/components/BaseProgressBar"
 import BaseLoading from "@/components/BaseLoading";
 import TestingResults from "@/components/TestingResults";
-import { useTest, useDeck } from "@/hooks"
-import { useRoute } from "vue-router"
+import { useExam } from "@/hooks"
 import { breakpointsMixin } from "@/mixins";
 import { Api } from "@/api";
 
@@ -64,29 +63,8 @@ export default {
     },
 
     async setup(props) {
-
-        const updateCardPreview = (item) => {
-            const card = testing.current.card.values.find(value => value.field.name === item.name);
-            return {
-                ...item,
-                value: card.value
-            }
-        }
-
-        const route = useRoute();
-        const deckSlug = route.params.deckSlug;
-        const { testing, createTest, onAnswer, testingWatcher } = await useTest(deckSlug, props.testSettings.isExam);
-
-        await createTest(props.testSettings);
-        const { getStructuredDeck } = useDeck(deckSlug);
-        const { dbStructure } = await getStructuredDeck(deckSlug, updateCardPreview);
-
-        testingWatcher(() => {
-            dbStructure.front = dbStructure.front.map(updateCardPreview);
-            dbStructure.back = dbStructure.back.map(updateCardPreview);
-        })
-
-        return { testing, dbStructure, onAnswer, createTest };
+        const { answering, onAnswer, dbStructure } = await useExam(props.testSettings, "test");
+        return { answering, onAnswer, dbStructure };
     },
 
 

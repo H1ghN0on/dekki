@@ -7,19 +7,19 @@ export default function useTest(deckSlug) {
   const toast = useToast();
   const router = useRouter();
 
-  const quest = reactive({
+  const answering = reactive({
     questions: [],
     correct: [],
     wrong: [],
     current: null,
     currentNumber: 0,
     timeForNextQuestion: 2000,
-    questCreationLoading: false,
+    answerCreationLoading: false,
     examDeck: null,
     shouldRememberWrong: false,
   });
 
-  const createQuest = async (testSettings) => {
+  const createExam = async (testSettings) => {
     const [error, data] = await Api().createQuest(deckSlug, testSettings);
     if (error) {
       toast.error("Попробуйте позже", {
@@ -29,11 +29,11 @@ export default function useTest(deckSlug) {
       return;
     }
 
-    quest.questions = data;
-    quest.current = data[quest.currentNumber];
-    quest.current.answered = "";
-    quest.currentNumber = 0;
-    quest.shouldRememberWrong = testSettings.shouldRememberWrong;
+    answering.questions = data;
+    answering.current = data[answering.currentNumber];
+    answering.current.answered = "";
+    answering.currentNumber = 0;
+    answering.shouldRememberWrong = testSettings.shouldRememberWrong;
 
     if (testSettings.shouldRememberWrong) {
       const [error, data] = await Api().copyDeckStructure(deckSlug, "Problems: " + deckSlug);
@@ -44,21 +44,21 @@ export default function useTest(deckSlug) {
         router.push("/decks");
         return;
       }
-      quest.examDeck = data;
+      answering.examDeck = data;
     }
   };
 
   const onAnswer = (value) => {
-    quest.current.answered = value;
-    if (quest.current.answers.includes(value)) {
-      quest.correct.push(quest.current.card);
+    answering.current.answered = value;
+    if (answering.current.answers.includes(value)) {
+      answering.correct.push(answering.current.card);
     } else {
-      quest.wrong.push(quest.current.card);
-      if (quest.shouldRememberWrong) {
+      answering.wrong.push(answering.current.card);
+      if (answering.shouldRememberWrong) {
         Api().addCardToDeck(
           {
-            values: quest.current.card.values.map((_value) => {
-              const trueFieldId = quest.examDeck.fields.find(
+            values: answering.current.card.values.map((_value) => {
+              const trueFieldId = answering.examDeck.fields.find(
                 (field) => field.name == _value.field.name
               ).id;
               return {
@@ -67,30 +67,30 @@ export default function useTest(deckSlug) {
               };
             }),
           },
-          quest.examDeck.slug
+          answering.examDeck.slug
         );
       }
     }
     setTimeout(async () => {
-      if (quest.questions.length !== quest.currentNumber + 1) {
-        quest.current = quest.questions[++quest.currentNumber];
-        quest.current.answered = "";
+      if (answering.questions.length !== answering.currentNumber + 1) {
+        answering.current = answering.questions[++answering.currentNumber];
+        answering.current.answered = "";
       } else {
-        quest.questCreationLoading = true;
-        await createQuest();
-        quest.questCreationLoading = false;
+        answering.answerCreationLoading = true;
+        await createExam();
+        answering.answerCreationLoading = false;
       }
-    }, quest.timeForNextQuestion);
+    }, answering.timeForNextQuestion);
   };
 
-  const questWatcher = (watcher) => {
-    return watch(quest, watcher);
+  const answeringWatcher = (watcher) => {
+    return watch(answering, watcher);
   };
 
   return {
-    createQuest,
-    quest,
+    createExam,
+    answering,
     onAnswer,
-    questWatcher,
+    answeringWatcher,
   };
 }
