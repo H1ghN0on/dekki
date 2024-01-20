@@ -10,4 +10,9 @@ module.exports = defineConfig({
       },
     },
   },
+  devServer: {
+    allowedHosts: [
+      '.loca.lt'
+    ]
+  },
 });

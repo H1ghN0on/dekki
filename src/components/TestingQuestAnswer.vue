@@ -5,7 +5,7 @@
             <base-button class="quest-submit-btn" :class="{
                 'correct': isCorrect,
                 'wrong': isWrong
-            }" @click="$emit('answer', answerInput)" :disabled="!!current.answered">Продолжить</base-button>
+            }" @click="handleClick" :disabled="!!current.answered">Продолжить</base-button>
             <div class="quest-hint" v-if="isWrong">
                 Неправильно, верный ответ: {{ correctAnswers }}
             </div>
@@ -26,6 +26,10 @@ export default {
         current: {
             type: Object,
             required: true,
+        },
+        timeout: {
+            type: Number,
+            required: true,
         }
     },
 
@@ -44,6 +48,15 @@ export default {
             answers = answers.slice(0, -2);
             return answers;
         },
+    },
+
+    methods: {
+        handleClick() {
+            this.$emit('answer', this.answerInput);
+            setTimeout(() => {
+                this.answerInput = "";
+            }, this.timeout)
+        }
     },
 
     data() {

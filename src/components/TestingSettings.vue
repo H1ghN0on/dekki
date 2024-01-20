@@ -24,6 +24,12 @@
                 </div>
                 <label>Установить лимит 100 вопросов</label>
             </div>
+            <div class="testing-setting testing-wrong-remember label-up">
+                <label>Сторона для вопроса</label>
+                <div class="input-container">
+                    <base-select :items="questionSide" v-model="testSettings.questionSide" />
+                </div>
+            </div>
         </div>
         <base-button class="submit-btn" @click="$emit('submit', testSettings)">
             К тесту
@@ -64,6 +70,7 @@ export default {
 
     mounted() {
         this.testSettings.examType = this.examTypes[0];
+        this.testSettings.questionSide = this.questionSide[0];
     },
 
     data() {
@@ -74,15 +81,19 @@ export default {
                 shouldRememberWrong: false,
                 isQuestionsLimit: false,
                 questionsLimit: 100,
+                questionSide: -1,
             },
             examTypes: [
                 { name: "Тест", accessor: "test" },
                 { name: "Вопрос-ответ", accessor: "quest" },
             ],
+            questionSide: [
+                { name: "Случайная сторона", accessor: "-1" },
+                { name: "Лицевая сторона", accessor: "0" },
+                { name: "Тыльная сторона", accessor: "1" },
+            ],
         }
     }
-
-
 }
 
 </script>
@@ -118,6 +129,12 @@ export default {
             .input-container {
                 margin-top: 0;
                 margin-right: 15px;
+            }
+        }
+
+        &.label-up {
+            .input-container {
+                margin-top: 5px;
             }
         }
 

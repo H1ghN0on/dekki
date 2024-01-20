@@ -7,7 +7,7 @@
             <base-progress-bar class="progress-bar" :class="{ 'active': answering.current.answered }"
                 :for-watch="answering.current.answered" :fill-time="answering.timeForNextQuestion - 500" :delayTime=".4" />
 
-            <testing-quest-answer class="quest-answer" @answer="onAnswer" :current="answering.current" />
+            <testing-quest-answer class="quest-answer" @answer="onAnswer" :current="answering.current" :timeout="answering.timeForNextQuestion" />
 
         </div>
         <testing-tools class="tools" :correct="answering.correct.length" :wrong="answering.wrong.length" />
