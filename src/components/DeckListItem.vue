@@ -16,14 +16,25 @@
     </div>
 
     <div class="card-settings" :class="{ 'card-settings-active': isCardSettingsActive }">
+
+      <!-- Add to deck button -->
       <router-link :to="'/update/' + deck.slug">
         <b-icon-plus-circle-fill class="card-settings-item add pointer" />
       </router-link>
+
+      <!-- Settings button-->
       <router-link :to="'/settings/' + deck.slug">
         <b-icon-gear-fill class="card-settings-item settings pointer" />
       </router-link>
-      <b-icon-trash3-fill v-if="!isLoading" @click="onRemove" class="card-settings-item remove pointer" />
-      <base-loading v-else :width="35" :height="35" :borderWidth=2 :color="'red'"
+
+      <!-- Save PDF button -->
+      <b-icon-file-earmark-pdf-fill v-if="!isLoading.savePDF" class="card-settings-item pdf pointer" @click="onPDF"/>
+      <base-loading v-else :width="35" :height="35" :borderWidth=1
+        class="card-settings-item remove loading" />
+
+      <!-- Remove button -->
+      <b-icon-trash3-fill v-if="!isLoading.remove" @click="onRemove" class="card-settings-item remove pointer" />
+      <base-loading v-else :width="35" :height="35" :borderWidth=1 :color="'red'"
         class="card-settings-item remove loading" />
 
     </div>
@@ -34,9 +45,10 @@
 
 import BaseButton from "@/components/BaseButton";
 import BaseLoading from "@/components/BaseLoading";
-import { BIconPlusCircleFill, BIconTrash3Fill, BIconGearFill } from "bootstrap-icons-vue";
+import { BIconPlusCircleFill, BIconTrash3Fill, BIconGearFill, BIconFileEarmarkPdfFill } from "bootstrap-icons-vue";
 import { useToast } from "vue-toastification";
 import { Api } from "@/api"
+import { usePDF, useDeckSettingsForm, useDeck, useTable } from "@/hooks"
 export default {
   components: {
     BIconPlusCircleFill,
@@ -44,6 +56,7 @@ export default {
     BIconGearFill,
     BaseButton,
     BaseLoading,
+    BIconFileEarmarkPdfFill
   },
   props: {
     deck: {
@@ -54,14 +67,19 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
+      isLoading: {
+        savePDF: false,
+        remove: false,
+      },
       isCardSettingsActive: false,
     }
   },
 
-  setup() {
+  async setup() {
     const toast = useToast();
-    return { toast };
+    const { makeDeckInfoDocument, save } = usePDF();
+
+    return { toast, makeDeckInfoDocument, save };
   },
 
   computed: {
@@ -72,7 +90,11 @@ export default {
 
   methods: {
     async onRemove() {
-      this.isLoading = true;
+
+      if (!confirm(`Вы точно хотите удалить колоду ${this.deck.name}?`))
+        return;
+
+      this.isLoading.remove = true;
       const [e] = await Api().removeDeck(this.deck.slug);
       if (e) {
         this.toast.error(`Ошибка случилась`, {
@@ -82,11 +104,51 @@ export default {
       } else {
         this.$emit('remove', this.deck.slug)
       }
-      this.isLoading = false;
+      this.isLoading.remove = false;
     },
 
     toggleSettings() {
       this.isCardSettingsActive = !this.isCardSettingsActive
+    },
+
+    async onPDF() {
+      this.isLoading.savePDF = true;
+      const deckSlug = this.deck.slug;
+
+      const { getStructuredDeck } = useDeck();
+
+
+      const getDeck = async () => {
+          const data = await getStructuredDeck(deckSlug, (item) => ({
+              ...item,
+              type: {
+                  accessor: item.type,
+                  name: item.type === "main" ? "Больше" : "Меньше",
+              }
+          }));
+          return data;
+      }
+      const deckStructureToTableStructure = (deckStr) => {
+          return deckStr.front.concat(deckStr.back).map((item) => ({
+              ...item,
+              accessor: item.name.toLowerCase() + "_" + item.id,
+          }));
+      }
+
+      const { name, dbStructure, cards } = await getDeck();
+
+      const { structure } = await useDeckSettingsForm(name, dbStructure);
+
+      const {
+          data,
+          headers,
+      } = useTable(deckStructureToTableStructure(structure), cards);
+
+      const document = this.makeDeckInfoDocument(this.deck.name, this.deck.cards_number, headers.value, data.data);
+      
+      this.save(document, "what.pdf");
+
+      this.isLoading.savePDF = false;
     }
   }
 
