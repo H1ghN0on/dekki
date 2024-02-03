@@ -146,7 +146,7 @@ export default {
 
       const document = this.makeDeckInfoDocument(this.deck.name, this.deck.cards_number, headers.value, data.data);
       
-      this.save(document, "what.pdf");
+      this.save(document, deckSlug);
 
       this.isLoading.savePDF = false;
     }
